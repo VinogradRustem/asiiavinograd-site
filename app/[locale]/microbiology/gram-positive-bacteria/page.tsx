@@ -277,8 +277,6 @@ export default function GramPositiveBacteriaPage() {
             </article>
           )}
 
-          <div className="mt-16 pt-8)}
-
           <div className="mt-16 pt-8 border-t border-white/10">
             <a href="https://t.me/usmle_vinograd" target="_blank" rel="noopener noreferrer" className="block bg-[#f47c5a] hover:bg-[#e06b49] text-white px-8 py-3 rounded-full font-medium transition-colors text-center mb-6 sm:inline-block sm:w-auto">
               {isRu ? 'Подписаться в Telegram' : 'Join on Telegram'}
