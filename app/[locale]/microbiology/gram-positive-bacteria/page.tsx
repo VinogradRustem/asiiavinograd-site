@@ -24,15 +24,17 @@ export default function GramPositiveBacteriaPage() {
             {isRu ? 'Грамположительные бактерии — полный обзор для USMLE' : 'Gram-Positive Bacteria — Complete Guide'}
           </h1>
 
-          {/* Видео */}
-          <div className="relative w-full mb-12 rounded-2xl overflow-hidden border border-white/10" style={{ paddingTop: '56.25%' }}>
-            <iframe
-              className="absolute top-0 left-0 w-full h-full"
-              src="https://www.youtube.com/embed/z2io9SgLmgU"
-              title="Gram-Positive Bacteria — Complete Guide"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
+          {/* Видео - собственный плеер (не YouTube), чтобы грузилось у зрителей из России */}
+          <div className="relative w-full mb-12 rounded-2xl overflow-hidden border border-white/10 bg-black">
+            <video
+              className="w-full h-auto"
+              controls
+              playsInline
+              preload="metadata"
+              poster="/lectures/gram-positive-bacteria/slide-01.jpg"
+            >
+              <source src="https://pub-6375af3fe2f64aa0ac6014cdf815d792.r2.dev/asiiavinograd-lectures/gram-positive-bacteria.mp4" type="video/mp4" />
+            </video>
           </div>
 
           {!isRu && (
@@ -186,13 +188,36 @@ export default function GramPositiveBacteriaPage() {
             </article>
           )}
 
-          <div className="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row gap-4">
-            <a href="https://t.me/usmle_vinograd" target="_blank" rel="noopener noreferrer" className="bg-[#f47c5a] hover:bg-[#e06b49] text-white px-8 py-3 rounded-full font-medium transition-colors text-center">
+          <div className="mt-16 pt-8 border-t border-white/10">
+            <a href="https://t.me/usmle_vinograd" target="_blank" rel="noopener noreferrer" className="block bg-[#f47c5a] hover:bg-[#e06b49] text-white px-8 py-3 rounded-full font-medium transition-colors text-center mb-6 sm:inline-block sm:w-auto">
               {isRu ? 'Подписаться в Telegram' : 'Join on Telegram'}
             </a>
-            <a href="https://youtube.com/@USMLEforIMG" target="_blank" rel="noopener noreferrer" className="border border-white/30 hover:border-white/60 text-white px-8 py-3 rounded-full font-medium transition-colors text-center">
-              {isRu ? 'Смотреть на YouTube' : 'Watch on YouTube'}
-            </a>
+
+            <p className="text-white/40 text-sm mb-4">
+              {isRu ? 'Мы в соцсетях:' : 'Find us on social media:'}
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {[
+                { href: 'https://t.me/usmle_vinograd', label: 'Telegram · Канал' },
+                { href: 'https://t.me/usmle_img_community', label: 'Telegram · Сообщество' },
+                { href: 'https://dzen.ru/asiiavinograd', label: 'Яндекс.Дзен' },
+                { href: 'https://vk.ru/usmle_vinograd', label: 'VK' },
+                { href: 'https://www.tiktok.com/@dr.asiia.vinograd', label: 'TikTok' },
+                { href: 'https://instagram.com/asia.vinograd', label: 'Instagram' },
+                { href: 'https://youtube.com/@asiiavinogradusmle', label: 'YouTube' },
+                { href: 'https://rutube.ru/channel/78455665/', label: 'RUTUBE' },
+              ].map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="border border-white/20 hover:border-white/50 hover:bg-white/5 text-white/80 hover:text-white px-5 py-2 rounded-full text-sm font-medium transition-colors"
+                >
+                  {s.label}
+                </a>
+              ))}
+            </div>
           </div>
 
         </div>
