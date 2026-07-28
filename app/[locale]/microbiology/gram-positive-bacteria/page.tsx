@@ -33,14 +33,242 @@ export default function GramPositiveBacteriaPage() {
               preload="metadata"
               poster="/lectures/gram-positive-bacteria/slide-01.jpg"
             >
-              <source src="https://pub-6375af3fe2f64aa0ac6014cdf815d792.r2.dev/asiiavinograd-lectures/gram-positive-bacteria.mp4" type="video/mp4" />
+              <source src={isRu ? "https://pub-6375af3fe2f64aa0ac6014cdf815d792.r2.dev/asiiavinograd-lectures/gram-positive-bacteria.mp4" : "https://pub-6375af3fe2f64aa0ac6014cdf815d792.r2.dev/asiiavinograd-lectures/gram-positive-bacteria-en.mp4"} type="video/mp4" />
             </video>
           </div>
 
           {!isRu && (
-            <p className="text-white/40 text-sm italic mb-10">
-              Full written lecture below is currently available in Russian. English version coming soon.
-            </p>
+            <article>
+
+              <p className="text-xl text-white/80 leading-[1.7] font-light mb-10">
+                Hi everyone! I&apos;m Dr. Asiia Vinograd — physician, cardiologist, PhD, and an IMG currently on my
+                own USMLE journey. In this article we&apos;re covering all gram-positive bacteria — exactly the way
+                you need to know it for Step 1. High-yield, no fluff.
+              </p>
+
+              <div className="my-10 rounded-xl overflow-hidden border border-white/10">
+                <Image src="/lectures/gram-positive-bacteria/slide-01.jpg" alt="Gram-Positive Bacteria" width={1440} height={810} className="w-full h-auto" />
+              </div>
+
+              <h2 className="text-3xl font-bold text-white mt-16 mb-2">How to Think About Gram-Positive Bacteria</h2>
+              <div className="w-10 h-1 bg-[#f47c5a] rounded-full mb-6" />
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">
+                When you do a Gram stain, gram-positive bacteria turn purple. That&apos;s because they have a thick
+                wall that holds the dye.
+              </p>
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">
+                The first question — what shape do you see? You only have three options: rods, round cells, or
+                branching filaments that look like little tree branches. Just from the shape, you&apos;ve already
+                cut the list by two-thirds. That&apos;s how powerful one look under the microscope is.
+              </p>
+
+              <div className="my-10 rounded-xl overflow-hidden border border-white/10">
+                <Image src="/lectures/gram-positive-bacteria/slide-02.jpg" alt="Gram-positive identification algorithm" width={1440} height={810} className="w-full h-auto" />
+              </div>
+
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">
+                <strong className="text-white font-semibold">Top lane — gram-positive rods.</strong> Next question — does this bug need oxygen? If yes — aerobic — think Listeria, Bacillus, or Corynebacterium. If no — anaerobic — think Clostridium.
+              </p>
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">
+                <strong className="text-white font-semibold">Bottom lane — branching filaments.</strong> Same logic. Aerobic — that&apos;s Nocardia (weakly acid-fast). Anaerobic — that&apos;s Actinomyces (not acid-fast at all).
+              </p>
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">
+                <strong className="text-white font-semibold">Middle lane — cocci, the round ones.</strong> This is the busy lane. First ask the catalase test. Catalase-negative → Streptococcus (chains). Catalase-positive → Staphylococcus (clusters, like grapes).
+              </p>
+
+              <div className="my-10 rounded-xl overflow-hidden border border-white/10">
+                <Image src="/lectures/gram-positive-bacteria/slide-03.jpg" alt="Cocci breakdown: catalase and hemolysis" width={1440} height={810} className="w-full h-auto" />
+              </div>
+
+              <p className="text-lg text-white/75 leading-[1.8] mb-3">
+                <strong className="text-white font-semibold">Streptococcus splits by hemolysis</strong> — how it destroys red blood cells on a blood agar plate:
+              </p>
+              <ul className="space-y-2 mb-6 pl-1">
+                <li className="text-lg text-white/75 leading-[1.7] flex gap-3"><span className="text-[#f47c5a] mt-1">•</span><span><strong className="text-white font-semibold">Alpha</strong> — partial destruction, green zone. Candidates: S. pneumoniae or Viridans. Pneumoniae is killed by optochin and dissolves in bile — Viridans is not.</span></li>
+                <li className="text-lg text-white/75 leading-[1.7] flex gap-3"><span className="text-[#f47c5a] mt-1">•</span><span><strong className="text-white font-semibold">Beta</strong> — complete destruction, clear zone. Group A (S. pyogenes: strep throat, rheumatic fever) or Group B (S. agalactiae: neonatal meningitis).</span></li>
+                <li className="text-lg text-white/75 leading-[1.7] flex gap-3"><span className="text-[#f47c5a] mt-1">•</span><span><strong className="text-white font-semibold">Gamma</strong> — no destruction. Main culprit: Enterococcus (tolerates salty conditions).</span></li>
+              </ul>
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">
+                <strong className="text-white font-semibold">Staphylococcus splits by coagulase.</strong> Coagulase-positive — only Staph aureus, the aggressive one. Coagulase-negative — S. epidermidis (skin, prosthetics) or S. saprophyticus (UTI in young women).
+              </p>
+
+              <div className="my-10 rounded-xl overflow-hidden border border-white/10">
+                <Image src="/lectures/gram-positive-bacteria/slide-04.jpg" alt="Final algorithm map" width={1440} height={810} className="w-full h-auto" />
+              </div>
+
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">
+                That&apos;s the entire algorithm. If you can walk through this map confidently, you can identify any
+                gram-positive bug on USMLE in under thirty seconds. Don&apos;t memorize names alone — memorize the
+                path you took to get there.
+              </p>
+
+              <h2 className="text-3xl font-bold text-white mt-16 mb-2">Staphylococcus</h2>
+              <div className="w-10 h-1 bg-[#f47c5a] rounded-full mb-6" />
+
+              <div className="my-10 rounded-xl overflow-hidden border border-white/10">
+                <Image src="/lectures/gram-positive-bacteria/slide-05.jpg" alt="Staphylococcus — key species" width={1440} height={810} className="w-full h-auto" />
+              </div>
+
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">Clusters. Catalase-positive. The key test is coagulase.</p>
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">
+                <strong className="text-white font-semibold">Staph aureus</strong> — coagulase-positive. The workhorse of USMLE. Causes a huge list of diseases: skin infections (impetigo, cellulitis, abscesses), pneumonia (especially after the flu, often with lung cavities), endocarditis (classic in IV drug users, attacks the tricuspid valve), osteomyelitis (most common cause overall), food poisoning (vomiting 1–6 hours after eating, no fever — preformed toxin), toxic shock syndrome (high fever, rash, hypotension — tampons, surgical wounds), and scalded skin syndrome in newborns.
+              </p>
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">
+                Dodges the immune system via protein A, which blocks antibodies. Treatment: MSSA — nafcillin, MRSA — vancomycin.
+              </p>
+
+              <div className="my-10 rounded-xl overflow-hidden border border-white/10">
+                <Image src="/lectures/gram-positive-bacteria/slide-06.jpg" alt="Staphylococcus clinical manifestations" width={1440} height={810} className="w-full h-auto" />
+              </div>
+
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">
+                <strong className="text-white font-semibold">Staph epidermidis</strong> — coagulase-negative, lives on skin, infects prosthetics via biofilm. Treat with vancomycin.
+              </p>
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">
+                <strong className="text-white font-semibold">Staph saprophyticus</strong> — also coagulase-negative. Causes UTI in young, sexually active women — second most common cause after E. coli. Treat with TMP-SMX.
+              </p>
+
+              <h2 className="text-3xl font-bold text-white mt-16 mb-2">Streptococcus and Enterococcus</h2>
+              <div className="w-10 h-1 bg-[#f47c5a] rounded-full mb-6" />
+
+              <div className="my-10 rounded-xl overflow-hidden border border-white/10">
+                <Image src="/lectures/gram-positive-bacteria/slide-07.jpg" alt="Streptococcus and Enterococcus" width={1440} height={810} className="w-full h-auto" />
+              </div>
+
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">Chains. Catalase-negative.</p>
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">
+                <strong className="text-white font-semibold">Strep pyogenes (Group A)</strong> — strep throat and skin infections. The danger comes after: rheumatic fever (only after strep throat, never after skin infection — damages the heart via molecular mimicry) and post-strep glomerulonephritis (blood in urine, swelling around the eyes, high blood pressure). Treatment — penicillin; Group A has never developed resistance.
+              </p>
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">
+                <strong className="text-white font-semibold">Strep agalactiae (Group B)</strong> — all about pregnancy and newborns. Most common cause of neonatal meningitis and sepsis, which is why pregnant women are screened at 35–37 weeks.
+              </p>
+
+              <div className="my-10 rounded-xl overflow-hidden border border-white/10">
+                <Image src="/lectures/gram-positive-bacteria/slide-08.jpg" alt="Hemolysis and clinical syndromes" width={1440} height={810} className="w-full h-auto" />
+              </div>
+
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">
+                <strong className="text-white font-semibold">Strep pneumoniae</strong> — alpha-hemolytic, polysaccharide capsule blocks phagocytosis. Number one cause of community-acquired pneumonia, bacterial meningitis in adults, and otitis media in kids. Classic picture — sudden fever, rust-colored sputum, lobar pneumonia. High-risk group — anyone without a working spleen. Treatment — penicillin or ceftriaxone.
+              </p>
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">
+                <strong className="text-white font-semibold">Viridans strep</strong> — also alpha-hemolytic, lives in the mouth. After dental work can cause subacute endocarditis on already-damaged valves.
+              </p>
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">
+                <strong className="text-white font-semibold">Enterococcus</strong> — gamma-hemolytic, lives in the gut. Causes UTI, endocarditis, and biliary infections. VRE (vancomycin-resistant) is treated with linezolid.
+              </p>
+
+              <h2 className="text-3xl font-bold text-white mt-16 mb-2">Spore-Forming Rods</h2>
+              <div className="w-10 h-1 bg-[#f47c5a] rounded-full mb-6" />
+
+              <div className="my-10 rounded-xl overflow-hidden border border-white/10">
+                <Image src="/lectures/gram-positive-bacteria/slide-09.jpg" alt="Spore-forming bacteria" width={1440} height={810} className="w-full h-auto" />
+              </div>
+
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">
+                Bacillus and Clostridium make spores — that&apos;s how they survive heat, time, and chemicals.
+              </p>
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">
+                <strong className="text-white font-semibold">Bacillus anthracis</strong> — anthrax. Three forms: cutaneous (painless black eschar, treat with ciprofloxacin), inhalational (the deadly one, widened mediastinum on X-ray), and GI (from contaminated meat).
+              </p>
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">
+                <strong className="text-white font-semibold">Bacillus cereus</strong> — food poisoning. Reheated rice → vomiting in 1–6 hours; meat/vegetables → diarrhea in 8–16 hours. Self-limited, no antibiotics needed.
+              </p>
+
+              <div className="my-10 rounded-xl overflow-hidden border border-white/10">
+                <Image src="/lectures/gram-positive-bacteria/slide-10.jpg" alt="Clostridium — four species" width={1440} height={810} className="w-full h-auto" />
+              </div>
+
+              <p className="text-lg text-white/75 leading-[1.8] mb-3">
+                <strong className="text-white font-semibold">Clostridium</strong> — anaerobes, four species you must know:
+              </p>
+              <ul className="space-y-2 mb-6 pl-1">
+                <li className="text-lg text-white/75 leading-[1.7] flex gap-3"><span className="text-[#f47c5a] mt-1">•</span><span><strong className="text-white font-semibold">C. perfringens</strong> — gas gangrene (trauma plus dirt, gas bubbles in muscle on imaging). Treatment — surgery plus penicillin.</span></li>
+                <li className="text-lg text-white/75 leading-[1.7] flex gap-3"><span className="text-[#f47c5a] mt-1">•</span><span><strong className="text-white font-semibold">C. tetani</strong> — tetanus. Toxin blocks inhibitory signals → spastic paralysis, starts with the jaw (trismus). Treatment — immunoglobulin plus penicillin plus benzodiazepines.</span></li>
+                <li className="text-lg text-white/75 leading-[1.7] flex gap-3"><span className="text-[#f47c5a] mt-1">•</span><span><strong className="text-white font-semibold">C. botulinum</strong> — botulism, the opposite of tetanus. Toxin blocks acetylcholine → flaccid paralysis, starts with the face. Forms: foodborne (canned goods), infant (honey, "floppy baby" — classic USMLE), wound. Treatment — antitoxin (BabyBIG for infants).</span></li>
+                <li className="text-lg text-white/75 leading-[1.7] flex gap-3"><span className="text-[#f47c5a] mt-1">•</span><span><strong className="text-white font-semibold">C. difficile</strong> — pseudomembranous colitis after antibiotics (especially clindamycin). Treatment — oral vancomycin or fidaxomicin.</span></li>
+              </ul>
+
+              <h2 className="text-3xl font-bold text-white mt-16 mb-2">Non-Spore-Forming Rods</h2>
+              <div className="w-10 h-1 bg-[#f47c5a] rounded-full mb-6" />
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">
+                <strong className="text-white font-semibold">Listeria monocytogenes</strong> — grows even in the fridge at 4°C (deli meats, soft cheeses, smoked fish). Affects pregnant women, newborns, the elderly, and the immunocompromised. Critical fact — naturally resistant to all cephalosporins, so if ceftriaxone plus vancomycin isn&apos;t working, add ampicillin.
+              </p>
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">
+                <strong className="text-white font-semibold">Corynebacterium diphtheriae</strong> — diphtheria. Toxin shuts down protein synthesis, a thick grey membrane forms in the throat. Treatment — antitoxin first, then penicillin.
+              </p>
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">
+                <strong className="text-white font-semibold">Actinomyces israelii</strong> — anaerobic filamentous rod, not acid-fast, normal mouth flora. Firm jaw mass with &quot;sulfur granules.&quot; Treatment — penicillin for 6–12 months.
+              </p>
+              <p className="text-lg text-white/75 leading-[1.8] mb-6">
+                <strong className="text-white font-semibold">Nocardia</strong> — aerobic filamentous rod, weakly acid-fast, lives in soil. Affects the immunocompromised, starts in the lungs (looks like TB), spreads to the brain. Treatment — TMP-SMX, not penicillin.
+              </p>
+
+              <div className="my-8 rounded-xl border border-[#4ecdc4]/30 bg-[#4ecdc4]/[0.06] pl-6 pr-6 py-5 border-l-4 border-l-[#4ecdc4]">
+                <p className="text-xs font-bold uppercase tracking-wider text-[#4ecdc4] mb-2">⚡ USMLE Trap</p>
+                <p className="text-lg text-white/85 leading-[1.7]">Actinomyces → penicillin. Nocardia → TMP-SMX. Burn that in.</p>
+              </div>
+
+              <h2 className="text-3xl font-bold text-white mt-16 mb-2">Classic USMLE Comparisons</h2>
+              <div className="w-10 h-1 bg-[#f47c5a] rounded-full mb-6" />
+              <p className="text-lg text-white/75 leading-[1.8] mb-4">The pairs the exam loves:</p>
+              <div className="grid sm:grid-cols-2 gap-4 mb-6">
+                <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+                  <p className="text-white font-semibold mb-1">Staph vs Strep</p>
+                  <p className="text-white/70 leading-[1.6]">Clusters vs chains. Catalase-positive vs catalase-negative.</p>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+                  <p className="text-white font-semibold mb-1">Pneumoniae vs Viridans</p>
+                  <p className="text-white/70 leading-[1.6]">Both alpha-hemolytic; pneumoniae is killed by optochin and dissolves in bile, Viridans is not.</p>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+                  <p className="text-white font-semibold mb-1">Actinomyces vs Nocardia</p>
+                  <p className="text-white/70 leading-[1.6]">Both branching filaments; Actinomyces anaerobic / not acid-fast / mouth flora / penicillin, Nocardia aerobic / weakly acid-fast / soil / TMP-SMX.</p>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+                  <p className="text-white font-semibold mb-1">Tetani vs Botulinum</p>
+                  <p className="text-white/70 leading-[1.6]">Same genus, opposite effects; tetani — spastic, ascends from the jaw. Botulinum — flaccid, descends from the face.</p>
+                </div>
+              </div>
+
+              <h2 className="text-3xl font-bold text-white mt-16 mb-2">Clinical Vignettes</h2>
+              <div className="w-10 h-1 bg-[#f47c5a] rounded-full mb-6" />
+
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">
+                <strong className="text-white font-semibold">Question 1 — Strep pneumoniae and the spleen.</strong> A 67-year-old man, sudden fever, rust-colored sputum, lobar consolidation, gram-positive diplococci in pairs, alpha-hemolytic, lysed by bile. Classic pneumococcal pneumonia. Why is the spleen critical? Because it&apos;s the primary site of opsonization and phagocytosis of encapsulated bacteria. Mnemonic SHiN: Strep pneumoniae, Haemophilus influenzae, Neisseria meningitidis — the three organisms critical in asplenic patients.
+              </p>
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">
+                <strong className="text-white font-semibold">Question 2 — C. tetani toxin mechanism.</strong> A construction worker, rusty nail, trismus, rigidity, hyperreflexia. Tetanospasmin is a zinc-dependent protease that travels retrograde to the spinal cord and cleaves SNARE proteins at inhibitory interneurons, blocking glycine and GABA. Result — uncontrolled muscle contraction, spastic paralysis. (Not to be confused with botulinum toxin, which blocks acetylcholine at the neuromuscular junction, causing flaccid paralysis.)
+              </p>
+              <p className="text-lg text-white/75 leading-[1.8] mb-5">
+                <strong className="text-white font-semibold">Question 3 — infant vs foodborne botulism.</strong> A 4-month-old, honey on the pacifier, &quot;floppy baby,&quot; constipation. In infant botulism the organism colonizes the gut and produces toxin in vivo; in foodborne botulism, preformed toxin is simply ingested. Adult gut flora outcompetes C. botulinum — infant flora is immature.
+              </p>
+              <p className="text-lg text-white/75 leading-[1.8] mb-8">
+                <strong className="text-white font-semibold">Question 4 — Nocardia vs Actinomyces, the ultimate trap.</strong> An HIV patient, CD4 of 62, cavitary lung lesion plus ring-enhancing brain lesions, gram-positive branching rods, catalase-positive, weakly acid-fast. This is Nocardia (aerobic, soil organism, disseminates to lungs and brain in the immunocompromised) — treatment is TMP-SMX, not penicillin.
+              </p>
+
+              <div className="mt-16 rounded-2xl border border-[#f47c5a]/30 bg-gradient-to-br from-[#f47c5a]/[0.08] to-transparent p-8">
+                <p className="text-xs font-bold uppercase tracking-wider text-[#f47c5a] mb-3">Bottom Line</p>
+                <p className="text-lg text-white/85 leading-[1.7] mb-5">Three things to walk away with today:</p>
+                <ol className="space-y-4 mb-5">
+                  <li className="flex gap-4">
+                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-[#f47c5a]/20 text-[#f47c5a] font-bold text-sm flex items-center justify-center">1</span>
+                    <span className="text-white/85 leading-[1.7]"><strong className="text-white">The framework.</strong> Shape tells you the group: clusters — Staph, chains — Strep. Rods split into spore-formers (Bacillus, Clostridium) and non-spore-formers. Branching filaments — Nocardia or Actinomyces (aerobic/anaerobic, acid-fast or not).</span>
+                  </li>
+                  <li className="flex gap-4">
+                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-[#f47c5a]/20 text-[#f47c5a] font-bold text-sm flex items-center justify-center">2</span>
+                    <span className="text-white/85 leading-[1.7]"><strong className="text-white">The classic pairs</strong> — these are what USMLE tests the most.</span>
+                  </li>
+                  <li className="flex gap-4">
+                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-[#f47c5a]/20 text-[#f47c5a] font-bold text-sm flex items-center justify-center">3</span>
+                    <span className="text-white/85 leading-[1.7]"><strong className="text-white">The treatment traps</strong> — Actinomyces (penicillin) vs Nocardia (TMP-SMX), Listeria (add ampicillin), MRSA (vancomycin), VRE (linezolid), C. difficile (oral vancomycin).</span>
+                  </li>
+                </ol>
+                <p className="text-white/70 leading-[1.7]">
+                  Gram-positive bacteria are one of the highest-yield topics on USMLE Step 1 and Step 2. If you understand the logic — not just memorize the names — you can answer almost any question about them.
+                </p>
+              </div>
+
+            </article>
           )}
 
           {isRu && (
@@ -278,15 +506,15 @@ export default function GramPositiveBacteriaPage() {
           )}
 
           <div className="mt-16 pt-8 border-t border-white/10">
-            <a href="https://t.me/usmle_vinograd" target="_blank" rel="noopener noreferrer" className="block bg-[#f47c5a] hover:bg-[#e06b49] text-white px-8 py-3 rounded-full font-medium transition-colors text-center mb-6 sm:inline-block sm:w-auto">
-              {isRu ? 'Подписаться в Telegram' : 'Join on Telegram'}
+            <a href={isRu ? "https://t.me/usmle_vinograd" : "https://discord.gg/Wz68kvvpk"} target="_blank" rel="noopener noreferrer" className="block bg-[#f47c5a] hover:bg-[#e06b49] text-white px-8 py-3 rounded-full font-medium transition-colors text-center mb-6 sm:inline-block sm:w-auto">
+              {isRu ? 'Подписаться в Telegram' : 'Join our Discord community'}
             </a>
 
             <p className="text-white/40 text-sm mb-4">
               {isRu ? 'Мы в соцсетях:' : 'Find us on social media:'}
             </p>
             <div className="flex flex-wrap gap-3">
-              {[
+              {(isRu ? [
                 { href: 'https://t.me/usmle_vinograd', label: 'Telegram · Канал' },
                 { href: 'https://t.me/usmle_img_community', label: 'Telegram · Сообщество' },
                 { href: 'https://dzen.ru/asiiavinograd', label: 'Яндекс.Дзен' },
@@ -295,7 +523,18 @@ export default function GramPositiveBacteriaPage() {
                 { href: 'https://instagram.com/asia.vinograd', label: 'Instagram' },
                 { href: 'https://youtube.com/@asiiavinogradusmle', label: 'YouTube' },
                 { href: 'https://rutube.ru/channel/78455665/', label: 'RUTUBE' },
-              ].map((s) => (
+              ] : [
+                { href: 'https://www.youtube.com/@USMLEforIMG', label: 'YouTube' },
+                { href: 'https://discord.gg/Wz68kvvpk', label: 'Discord' },
+                { href: 'https://www.facebook.com/profile.php?id=61589813762652', label: 'Facebook · Page' },
+                { href: 'https://www.facebook.com/groups/usmleforimgs.vinograd', label: 'Facebook · Group' },
+                { href: 'https://instagram.com/dr.asiavinograd', label: 'Instagram' },
+                { href: 'https://www.threads.net/@dr.asiavinograd', label: 'Threads' },
+                { href: 'https://www.tiktok.com/@drasiiavinograd', label: 'TikTok' },
+                { href: 'https://linkedin.com/in/asiia-vinograd', label: 'LinkedIn' },
+                { href: 'https://www.patreon.com/cw/drasiiavinograd', label: 'Patreon' },
+                { href: 'https://medium.com/@usmleforimgs.drvinograd', label: 'Medium' },
+              ]).map((s) => (
                 <a
                   key={s.label}
                   href={s.href}
