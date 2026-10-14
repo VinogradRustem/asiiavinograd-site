@@ -264,3 +264,26 @@
   .pl-list li { align-items: flex-start; }
   .pl-toast { flex-wrap: wrap; }
 }
+
+/* Platforms: neutral letter badges (not brand logos) */
+.pl-plats-row { display: inline-flex; flex-wrap: wrap; gap: 3px; vertical-align: middle; }
+.pl-plat { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 20px; padding: 0 5px; border-radius: 6px; font-size: 10.5px; font-weight: 800; letter-spacing: .02em; color: #fff; }
+.pl-plat.p-ig { background: #c13584; }
+.pl-plat.p-fb { background: #1877f2; }
+.pl-plat.p-th { background: #222; }
+.pl-plat.p-yt { background: #d62b2b; }
+.pl-plat.p-vk { background: #2f6fb7; }
+.pl-plat.p-tg { background: #2a9bd6; }
+.pl-plat.p-dc { background: #5865f2; }
+.pl-where { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; font-size: 12.5px; color: var(--ink-2); }
+.pl-more-info { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; }
+.pl-more-info b { margin-top: 4px; }
+.pl-fmts { margin-bottom: 10px; }
+.pl-route { margin-bottom: 16px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; }
+.pl-route summary { cursor: pointer; font-weight: 700; font-size: 13.5px; }
+.pl-route-wrap { overflow-x: auto; margin-top: 10px; }
+.pl-route-t { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 12.5px; }
+.pl-route-t th, .pl-route-t td { padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: left; }
+.pl-route-t td.b { font-weight: 700; }
+.pl-route-t td.c { color: var(--ink-2); }
+.pl-list-main .m .pl-plats-row { margin-left: 6px; }
