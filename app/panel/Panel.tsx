@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import './panel.css'
+import Shoot from './Shoot'
 
 type Item = {
   id: string
@@ -19,15 +20,15 @@ type Item = {
 }
 
 const COLUMNS: { key: string; label: string; hint: string; statuses: string[] }[] = [
-  { key: 'idea', label: 'Идеи', hint: 'Радар тем и ваши заметки', statuses: ['idea'] },
-  { key: 'plan', label: 'В плане', hint: 'Решили снимать или писать', statuses: ['plan'] },
-  { key: 'work', label: 'Готовится', hint: 'Файл в топике, бот готовит', statuses: ['work'] },
-  { key: 'ready', label: 'Ждёт публикации', hint: 'Загружено или в очереди', statuses: ['ready', 'scheduled'] },
+  { key: 'idea', label: 'Идеи', hint: 'Заметки и темы из радара', statuses: ['idea'] },
+  { key: 'plan', label: 'На съёмке', hint: 'Тему взяли, снимаем', statuses: ['plan'] },
+  { key: 'work', label: 'На проверке', hint: 'Видео у бота: обложка, текст, согласование', statuses: ['work'] },
+  { key: 'ready', label: 'Готово к выходу', hint: 'Загружено или стоит в очереди', statuses: ['ready', 'scheduled'] },
   { key: 'published', label: 'Опубликовано', hint: 'Уже вышло', statuses: ['published'] },
 ]
 
 const STATUS_LABEL: Record<string, string> = {
-  idea: 'Идея', plan: 'В плане', work: 'Готовится', ready: 'Ждёт публикации',
+  idea: 'Идея', plan: 'На съёмке', work: 'На проверке', ready: 'Готово к выходу',
   scheduled: 'В очереди', published: 'Опубликовано',
 }
 
@@ -74,11 +75,11 @@ function sameDay(a: Date, b: Date) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate()
 }
 
-export default function Panel() {
+export default function Panel({ userName }: { userName: string }) {
   const [items, setItems] = useState<Item[]>([])
   const [loaded, setLoaded] = useState(false)
   const [err, setErr] = useState('')
-  const [tab, setTab] = useState('content')
+  const [tab, setTab] = useState('shoot')
   const [view, setView] = useState<'board' | 'calendar' | 'table'>('board')
   const [lang, setLang] = useState<'all' | 'ru' | 'en'>('all')
   const [format, setFormat] = useState('all')
@@ -173,11 +174,12 @@ export default function Panel() {
           <span className="pl-dot" aria-hidden />
           <div>
             <h1>Пульс USMLE</h1>
-            <p>Доктор Асия Виноград · контент и продвижение</p>
+            <p>Привет, {userName} · <button className="pl-logout" onClick={async () => { await fetch('/api/panel/login', { method: 'DELETE' }); location.reload() }}>выйти</button></p>
           </div>
         </div>
         <nav className="pl-tabs" aria-label="Разделы">
-          <button className={tab === 'content' ? 'on' : ''} onClick={() => setTab('content')}>Контент</button>
+          <button className={tab === 'shoot' ? 'on' : ''} onClick={() => setTab('shoot')}>Что снимать</button>
+          <button className={tab === 'content' ? 'on' : ''} onClick={() => { setTab('content'); load() }}>Доска</button>
           {LOCKED.map(l => (
             <button key={l.key} className={`locked ${tab === l.key ? 'on' : ''}`} onClick={() => setTab(l.key)}>
               <Lock /> {l.label}
@@ -188,15 +190,17 @@ export default function Panel() {
 
       {err && <div className="pl-err" role="alert">{err}</div>}
 
-      {tab !== 'content' ? (
+      {tab === 'shoot' ? (
+        <Shoot onTaken={() => load()} onOpenBoard={() => { setTab('content'); load() }} />
+      ) : tab !== 'content' ? (
         <LockedTab info={LOCKED.find(l => l.key === tab)!} />
       ) : (
         <main className="pl-main">
           <section className="pl-kpis" aria-label="Сводка">
             <Kpi n={counts.idea} label="Идеи" />
-            <Kpi n={counts.plan} label="В плане" />
-            <Kpi n={counts.work} label="Готовится" />
-            <Kpi n={counts.ready} label="Ждёт публикации" accent />
+            <Kpi n={counts.plan} label="На съёмке" accent />
+            <Kpi n={counts.work} label="На проверке" />
+            <Kpi n={counts.ready} label="Готово к выходу" />
             <Kpi n={counts.week} label="Вышло за 7 дней" />
           </section>
 
@@ -252,7 +256,8 @@ export default function Panel() {
                     <p className="pl-col-hint">{col.hint}</p>
                     <div className="pl-cards">
                       {list.map(i => (
-                        <Card key={i.id} i={i} onOpen={() => setEdit(i)} onDrag={() => setDragId(i.id)} />
+                        <Card key={i.id} i={i} onOpen={() => setEdit(i)} onDrag={() => setDragId(i.id)}
+                          onShot={col.key === 'plan' ? () => remove(i.id) : undefined} />
                       ))}
                       {list.length === 0 && <p className="pl-col-empty">Пусто</p>}
                     </div>
@@ -293,10 +298,11 @@ function Tags({ i }: { i: Item }) {
   )
 }
 
-function Card({ i, onOpen, onDrag }: { i: Item; onOpen: () => void; onDrag: () => void }) {
+function Card({ i, onOpen, onDrag, onShot }: { i: Item; onOpen: () => void; onDrag: () => void; onShot?: () => void }) {
   const d = itemDate(i)
   const links = Object.entries(i.platforms || {}).filter(([k]) => k !== 'sources')
   return (
+    <div className="pl-card-wrap">
     <button className="pl-card" draggable onDragStart={onDrag} onClick={onOpen}>
       <Tags i={i} />
       <span className="pl-card-title">{i.title}</span>
@@ -307,6 +313,12 @@ function Card({ i, onOpen, onDrag }: { i: Item; onOpen: () => void; onDrag: () =
         </span>
       )}
     </button>
+    {onShot && (
+      <button className="pl-shot" onClick={onShot} title="Видео загружено в бота: эта карточка больше не нужна, бот ведёт свою">
+        Снято, видео в боте
+      </button>
+    )}
+    </div>
   )
 }
 

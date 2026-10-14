@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
-import { isPanelAuthed } from '@/lib/panel'
+import { PANEL_NAMES, panelUser } from '@/lib/panel'
 import Panel from './Panel'
+import Login from './Login'
 
 export const dynamic = 'force-dynamic'
 export const metadata: Metadata = {
@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 }
 
 export default async function PanelPage() {
-  if (!(await isPanelAuthed())) notFound()
-  return <Panel />
+  const user = await panelUser()
+  if (!user) return <Login />
+  return <Panel userName={PANEL_NAMES[user] || user} />
 }
