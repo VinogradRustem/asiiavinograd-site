@@ -80,7 +80,10 @@ export default function Footer() {
         <Ecg className="relative mt-10 h-12 w-full text-white/15" />
         <div className="relative mt-4 flex flex-col gap-2 border-t border-white/10 pt-6 text-xs text-white/40 sm:flex-row sm:justify-between">
           <span>{t('footer.copy')}</span>
-          <span>MD · PhD · USMLE Step 1</span>
+          <span className="flex gap-5">
+            <a href={ru ? '/ru/privacy' : '/privacy'} className="hover:text-white">{ru ? 'Конфиденциальность' : 'Privacy Policy'}</a>
+            <a href={ru ? '/ru/terms' : '/terms'} className="hover:text-white">{ru ? 'Условия использования' : 'Terms of Service'}</a>
+          </span>
         </div>
       </div>
     </footer>
