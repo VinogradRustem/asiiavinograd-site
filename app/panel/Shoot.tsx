@@ -20,7 +20,7 @@ type Topic = {
 }
 
 const FORMAT_LABEL: Record<string, string> = {
-  reels: 'Reels', carousel: 'Карусель', threads: 'Threads', lecture: 'Лекция', article: 'Статья ВК', post: 'Пост', other: 'Пост',
+  reels: 'Reels', carousel: 'Карусель', threads: 'Threads', lecture: 'Лекция', article: 'Пост-статья', post: 'Пост', other: 'Пост',
 }
 
 const SEGMENT_SHORT: Record<string, string> = {
