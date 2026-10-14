@@ -19,8 +19,8 @@ export default function ConfirmPage() {
   }, []);
 
   return (
-    <main className="bg-[#0a0f1e] min-h-screen flex items-center justify-center">
-      <div className="text-white/50 text-lg">Confirming your email...</div>
+    <main className="page-bg min-h-screen flex items-center justify-center">
+      <div className="text-muted text-lg">Confirming your email...</div>
     </main>
   );
 }

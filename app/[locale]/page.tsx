@@ -1,259 +1,186 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import Image from 'next/image';
 import ContactModal from '../../components/ContactModal';
+import NavBar from '../../components/NavBar';
+import Footer from '../../components/Footer';
 import ProblemSection from '../../components/ProblemSection';
 import PricingSection from '../../components/PricingSection';
 import FaqSection from '../../components/FaqSection';
-import { useRouter, usePathname } from 'next/navigation';
+import { Arrow, ArrowButton, Ecg, SectionHead } from '../../components/ui';
+
+const YT = 'https://youtube.com/@USMLEforIMG';
+
+function ytId(url: string) {
+  const m = url.match(/(?:youtu\.be\/|v=)([\w-]{11})/);
+  return m ? m[1] : null;
+}
 
 export default function Home() {
   const t = useTranslations();
   const locale = useLocale();
-  const router = useRouter();
-  const pathname = usePathname();
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const ru = locale === 'ru';
   const [modalOpen, setModalOpen] = useState(false);
+  const openModal = () => setModalOpen(true);
 
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const switchLocale = (newLocale: string) => {
-    const path = window.location.pathname;
-    if (newLocale === 'en') {
-      window.location.href = path.startsWith('/ru') ? (path.slice(3) || '/') : path;
-      return;
-    }
-    if (!path.startsWith('/ru')) {
-      window.location.href = '/ru' + path;
-    }
-  };
-
-  const navLinks = [
-    { key: 'about', label: t('nav.about') },
-    { key: 'curriculum', label: t('nav.curriculum') },
-    { key: 'lectures', label: t('nav.lectures') },
-    { key: 'pricing', label: t('nav.pricing') },
-    { key: 'connect', label: t('nav.connect') },
-  ];
-
-  const aboutItems = t.raw('about.items') as {label: string, sub: string}[];
-  const curriculumItems = t.raw('curriculum.items') as {title: string, topics: string, free: boolean, slug: string}[];
+  const aboutItems = t.raw('about.items') as { label: string; sub: string }[];
+  const curriculumItems = t.raw('curriculum.items') as { title: string; topics: string; free: boolean; slug: string }[];
   const englishFeatures = t.raw('curriculum.english_features') as string[];
-  const lectureItems = t.raw('lectures.items') as {tag: string, title: string, desc: string, url: string, soon: boolean}[];
-  const platforms = t.raw('connect.platforms') as {name: string, sub: string, url: string}[];
+  const lectureItems = t.raw('lectures.items') as { tag: string; title: string; desc: string; url: string; soon: boolean }[];
+  const trending = t.raw('trending.items') as { title: string; desc: string; tag: string }[];
+  const platforms = t.raw('connect.platforms') as { name: string; sub: string; url: string }[];
+
+  const steps = ru
+    ? [
+        { n: '01', title: 'Смотрите бесплатные лекции', desc: 'High-yield темы Step 1 на YouTube — на русском и английском.', href: YT, cta: 'Открыть YouTube' },
+        { n: '02', title: 'Закрепляйте с Anki', desc: 'Карточки интервального повторения к каждому разделу.', href: '/anki', cta: 'Anki-карточки' },
+        { n: '03', title: 'Вступайте в USMLE Club', desc: 'Конспекты, разборы задач и личный созвон с доктором.', href: '#pricing', cta: 'Смотреть тарифы' },
+      ]
+    : [
+        { n: '01', title: 'Watch free lectures', desc: 'High-yield Step 1 topics on YouTube — in English and Russian.', href: YT, cta: 'Open YouTube' },
+        { n: '02', title: 'Lock it in with Anki', desc: 'Spaced-repetition decks for every section.', href: '/anki', cta: 'Anki decks' },
+        { n: '03', title: 'Join USMLE Club', desc: 'Notes, case reviews and a personal call with the doctor.', href: '#pricing', cta: 'See pricing' },
+      ];
+  const resTags = ru ? ['Лекции', 'Anki', 'Задачи'] : ['Lectures', 'Anki', 'Cases'];
 
   return (
-    <main className="bg-[#0a0f1e] text-white min-h-screen font-sans">
-      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-[#0a0f1e]/95 backdrop-blur border-b border-white/10' : ''}`}>
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <span className="font-bold text-lg tracking-tight">{t('nav.siteTitle')}</span>
-          <div className="hidden md:flex items-center gap-8">
-            {navLinks.map(link => (
-              <a key={link.key} href={`#${link.key}`} className="text-sm text-white/70 hover:text-white transition-colors">{link.label}</a>
-            ))}
-            <div className="flex items-center gap-1 bg-white/10 rounded-full px-1 py-1">
-              <button onClick={() => switchLocale('en')} className={`px-3 py-1 rounded-full text-sm transition-all ${locale === 'en' ? 'bg-white text-[#0a0f1e] font-medium' : 'text-white/60 hover:text-white'}`}>EN</button>
-              <button onClick={() => switchLocale('ru')} className={`px-3 py-1 rounded-full text-sm transition-all ${locale === 'ru' ? 'bg-white text-[#0a0f1e] font-medium' : 'text-white/60 hover:text-white'}`}>RU</button>
-            </div>
-            <a href={locale === 'ru' ? '/ru/auth' : '/auth'} className="border border-white/20 hover:border-white/40 text-white/70 hover:text-white text-sm px-4 py-2 rounded-full transition-colors">
-              {locale === 'ru' ? 'Войти' : 'Sign In'}
-            </a>
-            <button onClick={() => setModalOpen(true)} className="bg-[#f47c5a] hover:bg-[#e06b49] text-white text-sm px-4 py-2 rounded-full transition-colors">{t('nav.cta')}</button>
-          </div>
-          <button className="md:hidden text-white" onClick={() => setMenuOpen(!menuOpen)}>
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={menuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
-            </svg>
-          </button>
-        </div>
-        {menuOpen && (
-          <div className="md:hidden bg-[#0a0f1e] border-t border-white/10 px-6 py-4 flex flex-col gap-4">
-            {navLinks.map(link => (
-              <a key={link.key} href={`#${link.key}`} className="text-white/70 hover:text-white" onClick={() => setMenuOpen(false)}>{link.label}</a>
-            ))}
-            <div className="flex gap-2">
-              <button onClick={() => switchLocale('en')} className={`px-3 py-1 rounded-full text-sm ${locale === 'en' ? 'bg-white text-[#0a0f1e]' : 'text-white/60'}`}>EN</button>
-              <button onClick={() => switchLocale('ru')} className={`px-3 py-1 rounded-full text-sm ${locale === 'ru' ? 'bg-white text-[#0a0f1e]' : 'text-white/60'}`}>RU</button>
-            </div>
-          </div>
-        )}
-      </nav>
+    <main className="page-bg min-h-screen font-sans text-ink">
+      <NavBar onCta={openModal} />
 
-      <section id="home" className="min-h-screen flex flex-col items-center justify-center text-center px-6 pt-24 pb-16">
-        <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-sm text-white/80 mb-8">
-          <span className="w-2 h-2 bg-[#4ecdc4] rounded-full animate-pulse"></span>
-          {t('hero.badge')}
+      {/* ───────── HERO ───────── */}
+      <section id="home" className="px-3 pt-24 md:px-6 md:pt-28">
+        <div className="mx-auto grid max-w-[1240px] gap-3 lg:grid-cols-[1.25fr_1fr]">
+          <div className="card relative flex flex-col justify-between overflow-hidden p-7 md:p-12">
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-2 rounded-full border border-white bg-white/80 px-3.5 py-1.5 text-[13px] text-slate">
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-steel opacity-60" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-slate" />
+                  </span>
+                  {t('hero.badge')}
+                </span>
+                <span className="rounded-full bg-slate px-3.5 py-1.5 text-[13px] font-medium tracking-wide text-white">MD · PhD</span>
+              </div>
+              <h1 className="mt-8 text-[44px] font-medium leading-[0.98] tracking-[-0.04em] text-ink sm:text-[60px] md:text-[76px]">
+                {t('hero.title')}
+              </h1>
+              <p className="mt-5 text-[22px] font-medium leading-snug tracking-[-0.01em] text-steel md:text-[28px]">{t('hero.slogan')}</p>
+              <p className="mt-5 max-w-xl text-[16px] leading-relaxed text-muted md:text-[17px]">{t('hero.desc')}</p>
+            </div>
+            <div className="mt-9 flex flex-wrap items-center gap-3">
+              <ArrowButton href={YT} external>
+                {t('hero.btn1')}
+              </ArrowButton>
+              <ArrowButton href="#about" variant="ghost">
+                {t('hero.btn2')}
+              </ArrowButton>
+            </div>
+            <Ecg className="pointer-events-none mt-10 h-14 w-full text-steel/60" />
+          </div>
+
+          <div className="relative min-h-[460px] overflow-hidden rounded-[28px] bg-steel md:min-h-[560px]">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(226,240,240,0.55),transparent_65%)]" />
+            <Image
+              src="/asiia.jpg"
+              alt="Dr. Asiia Vinograd"
+              fill
+              priority
+              sizes="(min-width: 1024px) 520px, 100vw"
+              className="object-cover object-[50%_18%]"
+            />
+            <div className="absolute inset-x-3 bottom-3 flex items-center justify-between gap-3 rounded-[22px] border border-white/60 bg-white/80 p-3 pl-5 backdrop-blur-md">
+              <div>
+                <div className="text-[15px] font-medium text-ink">{ru ? 'Врач-кардиолог, исследователь' : 'Cardiologist & researcher'}</div>
+                <div className="text-[13px] text-muted">{ru ? 'Пхукет, Таиланд' : 'Phuket, Thailand'}</div>
+              </div>
+              <a
+                href={YT}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="YouTube"
+                className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-slate text-white transition-colors hover:bg-ink"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden>
+                  <path d="M4 2.5v11l9-5.5z" />
+                </svg>
+              </a>
+            </div>
+          </div>
         </div>
-        <p className="text-sm font-semibold uppercase tracking-widest text-white/40 mb-4">
-          <span className="text-[#f47c5a]">MD</span> · <span className="text-[#4ecdc4]">PhD</span>
-        </p>
-        <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-4">{t('hero.title')}</h1>
-        <p className="text-2xl md:text-3xl font-semibold text-[#f47c5a] mb-6">{t('hero.slogan')}</p>
-        <p className="text-white/60 text-lg md:text-xl max-w-2xl mb-10 leading-relaxed">{t('hero.desc')}</p>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <a href="https://youtube.com/@USMLEforIMG" target="_blank" rel="noopener noreferrer" className="bg-[#f47c5a] hover:bg-[#e06b49] text-white px-8 py-3 rounded-full font-medium transition-colors">{t('hero.btn1')}</a>
-          <a href="#about" className="border border-white/30 hover:border-white/60 text-white px-8 py-3 rounded-full font-medium transition-colors">{t('hero.btn2')}</a>
-        </div>
-        <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl w-full">
-          {['1','2','3','4'].map(n => (
-            <div key={n} className="text-center">
-              <div className="text-3xl font-bold text-[#4ecdc4]">{t(`hero.stat${n}value`)}</div>
-              <div className="text-white/50 text-sm mt-1">{t(`hero.stat${n}label`)}</div>
+
+        {/* stats */}
+        <div className="mx-auto mt-3 grid max-w-[1240px] grid-cols-2 gap-3 md:grid-cols-4">
+          {['1', '2', '3', '4'].map(n => (
+            <div key={n} className="card px-6 py-5 md:px-7 md:py-6">
+              <div className="text-[34px] font-medium leading-none tracking-[-0.03em] text-slate md:text-[42px]">{t(`hero.stat${n}value`)}</div>
+              <div className="mt-2 text-sm text-muted">{t(`hero.stat${n}label`)}</div>
             </div>
           ))}
         </div>
       </section>
 
-
-      <section id="curriculum" className="py-24 px-6 bg-white/[0.02]">
-        <div className="max-w-6xl mx-auto">
-          <p className="text-[#f47c5a] text-sm uppercase tracking-widest mb-3">{t('curriculum.tag')}</p>
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">{t('curriculum.title')}</h2>
-          <p className="text-white/50 text-lg mb-16 max-w-2xl">{t('curriculum.desc')}</p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {curriculumItems.map((item, i) => {
-              const colors = [
-                '#f47c5a', // Microbiology - orange
-                '#4ecdc4', // Pharmacology - teal
-                '#a78bfa', // Cardiology - purple
-                '#f59e0b', // Pathology - amber
-                '#34d399', // GI - green
-                '#60a5fa', // Immunology - blue
-                '#f472b6', // Nephrology - pink
-                '#fb923c', // Neurology - orange2
-                '#e879f9', // Gastroenterology - fuchsia
-              ];
-              const color = colors[i % colors.length];
-              return (
-                <a key={item.title} href={`/${item.slug}`}
-                  className="group bg-white/5 border border-white/10 rounded-2xl p-6 transition-all cursor-pointer hover:bg-white/8 block"
-                  style={{ borderLeftWidth: '3px', borderLeftColor: color + '90' }}>
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="text-xs font-mono" style={{ color }}>{String(i + 1).padStart(2, '0')}</div>
-                    {item.free && (
-                      <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ backgroundColor: color + '20', color }}>
-                        {t('curriculum.free_badge')}
-                      </span>
-                    )}
-                  </div>
-                  <div className="font-semibold mb-2 group-hover:text-white transition-colors" style={{ color }}>{item.title}</div>
-                  <div className="text-white/40 text-sm leading-relaxed mb-4">{item.topics}</div>
-                  <div className="flex gap-4 text-xs text-white/30 mt-3">
-                    <span>Лекции</span>
-                    <span>Anki</span>
-                    <span>Задачи</span>
-                  </div>
-                </a>
-              );
-            })}
-          </div>
-
-          {/* 3 карточки — Anki, Задачи, Английский */}
-          <div className="mt-20 grid sm:grid-cols-3 gap-6">
-
-            {/* Anki */}
-            <a href="/anki" className="group bg-white/5 border border-white/10 hover:border-white/25 rounded-2xl p-8 transition-all flex flex-col">
-              <div className="text-white/30 text-xs font-mono mb-4">01</div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-3 text-white">{t('curriculum.anki_title')}</h2>
-              <p className="text-white/50 text-sm leading-relaxed flex-1 mb-6">{t('curriculum.anki_desc')}</p>
-              <span className="inline-flex items-center gap-2 text-sm font-medium text-[#f47c5a]">
-                {t('curriculum.anki_cta')} →
-              </span>
-            </a>
-
-            {/* Разборы задач */}
-            <a href="/cases" className="group bg-white/5 border border-white/10 hover:border-white/25 rounded-2xl p-8 transition-all flex flex-col">
-              <div className="text-white/30 text-xs font-mono mb-4">02</div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-3 text-white">{t('curriculum.cases_title')}</h2>
-              <p className="text-white/50 text-sm leading-relaxed flex-1 mb-6">{t('curriculum.cases_desc')}</p>
-              <span className="inline-flex items-center gap-2 text-sm font-medium text-[#4ecdc4]">
-                {t('curriculum.cases_cta')} →
-              </span>
-            </a>
-
-            {/* Медицинский английский */}
-            <a href="/medical-english" className="group bg-white/5 border border-white/10 hover:border-white/25 rounded-2xl p-8 transition-all flex flex-col">
-              <div className="text-white/30 text-xs font-mono mb-4">03</div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-3 text-white">{t('curriculum.english_title')}</h2>
-              <p className="text-white/50 text-sm leading-relaxed flex-1 mb-6">{t('curriculum.english_desc')}</p>
-              <div className="space-y-2 mb-6">
-                {englishFeatures.map((feature, i) => (
-                  <div key={i} className="flex items-center gap-2 text-xs">
-                    <div className="w-1 h-1 rounded-full shrink-0 bg-white/30" />
-                    <span className={i === 0 ? 'text-white/70' : 'text-white/30'}>{feature}</span>
-                  </div>
-                ))}
+      {/* ───────── HOW TO START ───────── */}
+      <section className="px-3 pt-3 md:px-6">
+        <div className="mx-auto grid max-w-[1240px] gap-3 md:grid-cols-3">
+          {steps.map((s, i) => (
+            <a
+              key={s.n}
+              href={s.href}
+              {...(s.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+              className={`group flex flex-col justify-between rounded-[28px] p-7 transition-colors ${
+                i === 2 ? 'bg-slate text-white hover:bg-ink' : 'border border-white bg-white/55 hover:bg-white'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <span className={`text-sm font-medium ${i === 2 ? 'text-white/60' : 'text-steel'}`}>
+                  {ru ? 'Шаг' : 'Step'} {s.n}
+                </span>
+                <span
+                  className={`grid h-10 w-10 place-items-center rounded-full transition-transform group-hover:rotate-45 ${
+                    i === 2 ? 'bg-white text-slate' : 'bg-slate text-white'
+                  }`}
+                >
+                  <Arrow />
+                </span>
               </div>
-              <span className="inline-flex items-center gap-2 text-sm font-medium text-[#e879f9]">
-                {t('curriculum.english_cta')} →
-              </span>
-            </a>
-
-          </div>
-
-        </div>
-      </section>
-      <section id="trending" className="py-24 px-6">
-        <div className="max-w-6xl mx-auto">
-          <p className="text-[#f47c5a] text-sm uppercase tracking-widest mb-3">{t('trending.tag')}</p>
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">{t('trending.title')}</h2>
-          <p className="text-white/50 text-lg mb-16 max-w-2xl">{t('trending.desc')}</p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {(t.raw('trending.items') as {title: string, desc: string, tag: string}[]).map(item => (
-              <div key={item.title} className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-[#f47c5a]/40 transition-all">
-                <div className="text-[#4ecdc4] text-xs mb-3">{item.tag}</div>
-                <h3 className="font-semibold text-xl mb-3">{item.title}</h3>
-                <p className="text-white/50 text-sm leading-relaxed">{item.desc}</p>
+              <div className="mt-10">
+                <h3 className="text-[22px] font-medium leading-tight tracking-[-0.02em]">{s.title}</h3>
+                <p className={`mt-2 text-[15px] leading-relaxed ${i === 2 ? 'text-white/70' : 'text-muted'}`}>{s.desc}</p>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="lectures" className="py-24 px-6">
-        <div className="max-w-6xl mx-auto">
-          <p className="text-[#f47c5a] text-sm uppercase tracking-widest mb-3">{t('lectures.tag')}</p>
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">{t('lectures.title')}</h2>
-          <p className="text-white/50 text-lg mb-16 max-w-2xl">{t('lectures.desc')}</p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {lectureItems.map(lecture => (
-              <a key={lecture.title} href={lecture.url} target="_blank" rel="noopener noreferrer" className="group bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-[#f47c5a]/40 transition-all block">
-                <div className="text-[#4ecdc4] text-xs mb-3">{lecture.tag}</div>
-                <h3 className="font-semibold text-lg mb-2 group-hover:text-[#f47c5a] transition-colors">{lecture.title}</h3>
-                <p className="text-white/50 text-sm leading-relaxed mb-4">{lecture.desc}</p>
-                <span className="text-[#f47c5a] text-sm">{lecture.soon ? t('lectures.joinBtn') : t('lectures.watchBtn')}</span>
-              </a>
-            ))}
-          </div>
+            </a>
+          ))}
         </div>
       </section>
 
       <ProblemSection />
 
-      <section id="about" className="py-24 px-6">
-        <div className="max-w-6xl mx-auto">
-          <p className="text-[#f47c5a] text-sm uppercase tracking-widest mb-3">{t('about.tag')}</p>
-          <h2 className="text-4xl md:text-5xl font-bold mb-16">{t('about.title')}</h2>
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div className="flex justify-center">
-              <Image src="/asiia.jpg" alt="Dr. Asiia Vinograd" width={320} height={420} className="rounded-3xl object-cover object-top shadow-2xl" priority />
+      {/* ───────── ABOUT ───────── */}
+      <section id="about" className="px-3 py-10 md:px-6 md:py-14">
+        <div className="mx-auto max-w-[1240px]">
+          <SectionHead eyebrow={t('about.tag')} title={t('about.title')} />
+          <div className="grid gap-3 lg:grid-cols-[0.8fr_1.4fr]">
+            <div className="relative min-h-[420px] overflow-hidden rounded-[28px] bg-steel">
+              <Image src="/asiia.jpg" alt="Dr. Asiia Vinograd" fill sizes="(min-width: 1024px) 460px, 100vw" className="object-cover object-[50%_15%]" />
+              <div className="absolute left-3 top-3 rounded-full bg-white/85 px-4 py-2 text-[13px] font-medium text-slate backdrop-blur">
+                {ru ? 'Доктор Асия Виноград' : 'Dr. Asiia Vinograd'}
+              </div>
             </div>
-            <div>
-              <p className="text-white/70 text-lg leading-relaxed mb-6">{t('about.p1')}</p>
-              <p className="text-white/70 text-lg leading-relaxed mb-10">{t('about.p2')}</p>
-              <div className="space-y-4">
-                {aboutItems.map(item => (
-                  <div key={item.label} className="flex items-start gap-3">
-                    <div className="w-1.5 h-1.5 bg-[#4ecdc4] rounded-full mt-2.5 shrink-0"></div>
+            <div className="flex flex-col gap-3">
+              <div className="card-solid p-7 md:p-9">
+                <p className="text-[19px] font-medium leading-snug tracking-[-0.01em] text-ink md:text-[22px]">{t('about.p1')}</p>
+                <p className="mt-5 text-[16px] leading-relaxed text-muted">{t('about.p2')}</p>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {aboutItems.map((item, i) => (
+                  <div key={item.label} className="card flex gap-4 p-5">
+                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-mist text-[13px] font-medium text-slate">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
                     <div>
-                      <span className="font-medium">{item.label}</span>
-                      <span className="text-white/50 text-sm ml-2">{item.sub}</span>
+                      <div className="text-[16px] font-medium leading-snug text-ink">{item.label}</div>
+                      <div className="mt-1 text-[14px] leading-snug text-muted">{item.sub}</div>
                     </div>
                   </div>
                 ))}
@@ -263,42 +190,206 @@ export default function Home() {
         </div>
       </section>
 
-      <PricingSection />
-
-      <FaqSection />
-
-      <section id="connect" className="py-24 px-6 bg-white/[0.02]">
-        <div className="max-w-6xl mx-auto text-center">
-          <p className="text-[#f47c5a] text-sm uppercase tracking-widest mb-3">{t('connect.tag')}</p>
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">{t('connect.title')}</h2>
-          <p className="text-white/50 text-lg mb-16 max-w-2xl mx-auto">{t('connect.desc')}</p>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {platforms.map(platform => (
-              <a key={platform.name} href={platform.url} target="_blank" rel="noopener noreferrer" className="bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all">
-                <div className="font-semibold mb-1">{platform.name}</div>
-                <div className="text-white/40 text-xs">{platform.sub}</div>
+      {/* ───────── CURRICULUM ───────── */}
+      <section id="curriculum" className="px-3 py-10 md:px-6 md:py-14">
+        <div className="mx-auto max-w-[1240px]">
+          <SectionHead eyebrow={t('curriculum.tag')} title={t('curriculum.title')} desc={t('curriculum.desc')} />
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {curriculumItems.map((item, i) => (
+              <a key={item.title} href={`/${item.slug}`} className="card group flex flex-col p-6 transition-colors hover:bg-white md:p-7">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-steel">{String(i + 1).padStart(2, '0')}</span>
+                  <div className="flex items-center gap-2">
+                    {item.free && (
+                      <span className="rounded-full bg-slate px-2.5 py-1 text-[11px] font-medium uppercase tracking-wide text-white">
+                        {t('curriculum.free_badge')}
+                      </span>
+                    )}
+                    <span className="grid h-9 w-9 place-items-center rounded-full bg-mist text-slate transition-all group-hover:rotate-45 group-hover:bg-slate group-hover:text-white">
+                      <Arrow />
+                    </span>
+                  </div>
+                </div>
+                <h3 className="mt-8 text-[21px] font-medium leading-tight tracking-[-0.02em] text-ink">{item.title}</h3>
+                <p className="mt-2 flex-1 text-[14px] leading-relaxed text-muted">{item.topics}</p>
+                <div className="mt-5 flex gap-1.5">
+                  {resTags.map(r => (
+                    <span key={r} className="rounded-full border border-ink/10 px-2.5 py-1 text-[12px] text-graphite/70">
+                      {r}
+                    </span>
+                  ))}
+                </div>
               </a>
             ))}
+          </div>
+
+          {/* Anki · Cases · Medical English */}
+          <div className="mt-3 grid gap-3 lg:grid-cols-3">
+            <a href="/anki" className="group flex flex-col rounded-[28px] bg-ink p-7 text-white transition-colors hover:bg-graphite md:p-9">
+              <span className="text-sm text-white/45">01</span>
+              <h3 className="mt-8 text-[30px] font-medium leading-tight tracking-[-0.03em] md:text-[34px]">{t('curriculum.anki_title')}</h3>
+              <p className="mt-3 flex-1 text-[15px] leading-relaxed text-white/60">{t('curriculum.anki_desc')}</p>
+              <span className="mt-8 inline-flex items-center gap-3 text-[15px] font-medium">
+                {t('curriculum.anki_cta')}
+                <span className="grid h-9 w-9 place-items-center rounded-full bg-white text-ink transition-transform group-hover:rotate-45">
+                  <Arrow />
+                </span>
+              </span>
+            </a>
+            <a href="/cases" className="group flex flex-col rounded-[28px] bg-steel p-7 text-white transition-colors hover:bg-slate md:p-9">
+              <span className="text-sm text-white/55">02</span>
+              <h3 className="mt-8 text-[30px] font-medium leading-tight tracking-[-0.03em] md:text-[34px]">{t('curriculum.cases_title')}</h3>
+              <p className="mt-3 flex-1 text-[15px] leading-relaxed text-white/75">{t('curriculum.cases_desc')}</p>
+              <span className="mt-8 inline-flex items-center gap-3 text-[15px] font-medium">
+                {t('curriculum.cases_cta')}
+                <span className="grid h-9 w-9 place-items-center rounded-full bg-white text-slate transition-transform group-hover:rotate-45">
+                  <Arrow />
+                </span>
+              </span>
+            </a>
+            <a href="/medical-english" className="card-solid group flex flex-col p-7 transition-shadow hover:shadow-lg md:p-9">
+              <span className="text-sm text-steel">03</span>
+              <h3 className="mt-8 text-[30px] font-medium leading-tight tracking-[-0.03em] text-ink md:text-[34px]">{t('curriculum.english_title')}</h3>
+              <p className="mt-3 text-[15px] leading-relaxed text-muted">{t('curriculum.english_desc')}</p>
+              <ul className="mt-5 flex-1 space-y-2">
+                {englishFeatures.map((f, i) => (
+                  <li key={i} className={`flex items-center gap-2.5 text-[13px] ${i === 0 ? 'text-ink' : 'text-muted'}`}>
+                    <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${i === 0 ? 'bg-slate' : 'bg-muted/40'}`} />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <span className="mt-8 inline-flex items-center gap-3 text-[15px] font-medium text-ink">
+                {t('curriculum.english_cta')}
+                <span className="grid h-9 w-9 place-items-center rounded-full bg-slate text-white transition-transform group-hover:rotate-45">
+                  <Arrow />
+                </span>
+              </span>
+            </a>
           </div>
         </div>
       </section>
 
-      <footer className="py-10 px-6 border-t border-white/10">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="text-white/50 text-sm">{t('footer.copy')}</div>
-          <div className="flex gap-6">
-            {[
-              { name: 'YouTube', url: 'https://youtube.com/@USMLEforIMG' },
-              { name: 'Patreon', url: 'https://patreon.com/drasiiavinograd' },
-              { name: 'Discord', url: 'https://discord.gg/Yn4hrf5nH' },
-              { name: 'LinkedIn', url: 'https://linkedin.com/in/asiia-vinograd' },
-            ].map(link => (
-              <a key={link.name} href={link.url} target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white text-sm transition-colors">{link.name}</a>
-            ))}
+      {/* ───────── LECTURES ───────── */}
+      <section id="lectures" className="px-3 py-10 md:px-6 md:py-14">
+        <div className="mx-auto max-w-[1240px]">
+          <SectionHead
+            eyebrow={t('lectures.tag')}
+            title={t('lectures.title')}
+            desc={t('lectures.desc')}
+            action={
+              <ArrowButton href={YT} external variant="ghost">
+                YouTube @USMLEforIMG
+              </ArrowButton>
+            }
+          />
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {lectureItems.map(lec => {
+              const id = ytId(lec.url);
+              return (
+                <a
+                  key={lec.title}
+                  href={lec.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="card group flex flex-col overflow-hidden p-2.5 transition-colors hover:bg-white"
+                >
+                  <div className="relative aspect-video overflow-hidden rounded-[20px] bg-steel">
+                    {id && !lec.soon ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`}
+                        alt=""
+                        loading="lazy"
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      />
+                    ) : (
+                      <div className="flex h-full flex-col justify-between bg-[linear-gradient(135deg,#5f8190,#36565f)] p-5">
+                        <span className="self-start rounded-full bg-white/15 px-3 py-1 text-[12px] text-white">{ru ? 'Скоро' : 'Coming soon'}</span>
+                        <Ecg className="h-10 w-full text-white/50" />
+                      </div>
+                    )}
+                    {!lec.soon && (
+                      <span className="absolute bottom-3 right-3 grid h-11 w-11 place-items-center rounded-full bg-white text-slate shadow-md">
+                        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden>
+                          <path d="M4 2.5v11l9-5.5z" />
+                        </svg>
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex flex-1 flex-col px-3.5 pb-3.5 pt-4">
+                    <span className="text-[12px] font-medium text-steel">{lec.tag}</span>
+                    <h3 className="mt-2 text-[18px] font-medium leading-snug tracking-[-0.01em] text-ink">{lec.title}</h3>
+                    <p className="mt-2 flex-1 text-[14px] leading-relaxed text-muted">{lec.desc}</p>
+                    <span className="mt-4 text-[14px] font-medium text-slate">{lec.soon ? t('lectures.joinBtn') : t('lectures.watchBtn')}</span>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+
+          {/* Trending */}
+          <div id="trending" className="card-dark mt-3 grid gap-6 p-7 md:grid-cols-[0.8fr_2fr] md:p-10">
+            <div>
+              <span className="inline-flex rounded-full bg-white/10 px-3.5 py-1.5 text-[13px] text-white/80">{t('trending.tag')}</span>
+              <h3 className="mt-5 text-[30px] font-medium leading-tight tracking-[-0.03em] md:text-[38px]">{t('trending.title')}</h3>
+              <p className="mt-3 text-[15px] leading-relaxed text-white/60">{t('trending.desc')}</p>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-3">
+              {trending.map(item => (
+                <div key={item.title} className="rounded-[22px] bg-white/[0.07] p-5 ring-1 ring-white/10">
+                  <span className="text-[12px] text-white/50">{item.tag}</span>
+                  <div className="mt-6 text-[18px] font-medium leading-snug">{item.title}</div>
+                  <p className="mt-2 text-[14px] leading-relaxed text-white/60">{item.desc}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </footer>
-          <ContactModal isOpen={modalOpen} onClose={() => setModalOpen(false)} locale={locale} />
+      </section>
+
+      <PricingSection />
+
+      <FaqSection onAsk={openModal} />
+
+      {/* ───────── CONNECT ───────── */}
+      <section id="connect" className="px-3 pb-3 pt-10 md:px-6 md:pt-14">
+        <div className="relative mx-auto max-w-[1240px] overflow-hidden rounded-[32px] bg-steel p-7 text-white md:p-12">
+          <Ecg className="pointer-events-none absolute inset-x-0 bottom-0 h-20 w-full text-white/15" />
+          <div className="relative grid gap-10 lg:grid-cols-[1fr_1.3fr] lg:items-end">
+            <div>
+              <span className="inline-flex rounded-full bg-white/15 px-3.5 py-1.5 text-[13px] text-white/85">{t('connect.tag')}</span>
+              <h2 className="mt-5 text-[38px] font-medium leading-[1.02] tracking-[-0.03em] md:text-[56px]">{t('connect.title')}</h2>
+              <p className="mt-4 max-w-md text-[16px] leading-relaxed text-white/75">{t('connect.desc')}</p>
+              <div className="mt-8">
+                <ArrowButton onClick={openModal} variant="light">
+                  {t('nav.cta')}
+                </ArrowButton>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+              {platforms.map(p => (
+                <a
+                  key={p.name}
+                  href={p.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex flex-col justify-between rounded-[20px] bg-white/10 p-4 ring-1 ring-white/15 transition-colors hover:bg-white hover:text-ink"
+                >
+                  <span className="flex items-center justify-between">
+                    <span className="text-[16px] font-medium">{p.name}</span>
+                    <Arrow className="opacity-60 transition-transform group-hover:rotate-45" />
+                  </span>
+                  <span className="mt-5 text-[13px] opacity-70">{p.sub}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+      <ContactModal isOpen={modalOpen} onClose={() => setModalOpen(false)} locale={locale} />
     </main>
   );
 }

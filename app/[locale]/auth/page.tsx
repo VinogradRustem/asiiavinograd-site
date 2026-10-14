@@ -38,29 +38,29 @@ export default function AuthPage() {
     setLoading(false);
   };
 
-  const inp = 'w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-[#f47c5a] transition-colors text-sm';
+  const inp = 'w-full bg-white/60 border border-ink/15 rounded-xl px-4 py-3 text-ink placeholder-muted/70 focus:outline-none focus:border-steel transition-colors text-sm';
 
   return (
-    <main className="bg-[#0a0f1e] min-h-screen flex items-center justify-center px-6">
+    <main className="page-bg min-h-screen flex items-center justify-center px-6">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <a href={locale === 'ru' ? '/ru' : '/'} className="text-white/50 text-sm hover:text-white transition-colors">
+          <a href={locale === 'ru' ? '/ru' : '/'} className="text-muted text-sm hover:text-ink transition-colors">
             ← {isRu ? 'На главную' : 'Back to home'}
           </a>
-          <h1 className="text-3xl font-bold text-white mt-4">
+          <h1 className="text-3xl font-bold text-ink mt-4">
             {mode === 'login' ? (isRu ? 'Войти' : 'Sign In') : (isRu ? 'Регистрация' : 'Sign Up')}
           </h1>
-          <p className="text-white/50 mt-2">Dr. Asiia Vinograd | USMLE</p>
+          <p className="text-muted mt-2">Dr. Asiia Vinograd | USMLE</p>
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-3xl p-8">
-          <div className="flex gap-2 mb-6 bg-white/5 rounded-xl p-1">
+        <div className="bg-white/60 border border-white rounded-[28px] p-8">
+          <div className="flex gap-2 mb-6 bg-white/60 rounded-xl p-1">
             <button onClick={() => setMode('login')}
-              className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${mode === 'login' ? 'bg-[#f47c5a] text-white' : 'text-white/50 hover:text-white'}`}>
+              className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${mode === 'login' ? 'bg-slate text-white' : 'text-muted hover:text-ink'}`}>
               {isRu ? 'Войти' : 'Sign In'}
             </button>
             <button onClick={() => setMode('register')}
-              className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${mode === 'register' ? 'bg-[#f47c5a] text-white' : 'text-white/50 hover:text-white'}`}>
+              className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${mode === 'register' ? 'bg-slate text-white' : 'text-muted hover:text-ink'}`}>
               {isRu ? 'Регистрация' : 'Sign Up'}
             </button>
           </div>
@@ -79,7 +79,7 @@ export default function AuthPage() {
             {success && <p className="text-green-400 text-sm">{success}</p>}
 
             <button type="submit" disabled={loading}
-              className="w-full bg-[#f47c5a] hover:bg-[#e06b49] text-white py-3 rounded-xl font-medium transition-all disabled:opacity-60">
+              className="w-full bg-slate hover:bg-ink text-white py-3 rounded-xl font-medium transition-all disabled:opacity-60">
               {loading ? '...' : (mode === 'login' ? (isRu ? 'Войти' : 'Sign In') : (isRu ? 'Создать аккаунт' : 'Create Account'))}
             </button>
           </form>

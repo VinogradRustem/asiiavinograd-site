@@ -7,7 +7,7 @@ import {getMessages, getLocale} from 'next-intl/server';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
-  subsets: ["latin"],
+  subsets: ["latin", "cyrillic"],
 });
 
 const geistMono = Geist_Mono({

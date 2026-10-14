@@ -1,65 +1,144 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
+import { Arrow } from './ui';
 
-export default function NavBar() {
+export function switchLocale(newLocale: string) {
+  const path = window.location.pathname;
+  if (newLocale === 'en') {
+    window.location.href = path.startsWith('/ru') ? path.slice(3) || '/' : path;
+    return;
+  }
+  if (!path.startsWith('/ru')) window.location.href = '/ru' + path;
+}
+
+/** Floating rounded nav bar. On the home page pass onCta to open the contact form. */
+export default function NavBar({ onCta }: { onCta?: () => void }) {
   const t = useTranslations('nav');
   const locale = useLocale();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const switchLocale = (newLocale: string) => {
-    if (newLocale === 'en') {
-      const path = window.location.pathname;
-      window.location.href = path.startsWith('/ru') ? (path.slice(3) || '/') : path;
-    } else {
-      const path = window.location.pathname;
-      if (!path.startsWith('/ru')) window.location.href = '/ru' + path;
-    }
-  };
-
   const homeUrl = locale === 'ru' ? '/ru' : '/';
+  const anchor = (id: string) => (onCta ? `#${id}` : `${homeUrl}#${id}`);
+  const links = [
+    { id: 'about', label: t('about') },
+    { id: 'curriculum', label: t('curriculum') },
+    { id: 'lectures', label: t('lectures') },
+    { id: 'pricing', label: t('pricing') },
+    { id: 'connect', label: t('connect') },
+  ];
+  const signIn = locale === 'ru' ? 'Войти' : 'Sign In';
+
+  const Lang = ({ big }: { big?: boolean }) => (
+    <div className="flex items-center gap-0.5 rounded-full bg-mist p-0.5">
+      {['en', 'ru'].map(l => (
+        <button
+          key={l}
+          onClick={() => switchLocale(l)}
+          className={`rounded-full ${big ? 'px-4 py-1.5' : 'px-2.5 py-1'} text-xs font-medium uppercase transition-all ${
+            locale === l ? 'bg-white text-ink shadow-sm' : 'text-muted hover:text-ink'
+          }`}
+        >
+          {l}
+        </button>
+      ))}
+    </div>
+  );
 
   return (
-    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-[#0a0f1e]/95 backdrop-blur border-b border-white/10' : ''}`}>
-      <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        <a href={homeUrl} className="font-bold text-lg tracking-tight text-white hover:text-white/80 transition-colors">
-          {t('siteTitle')}
+    <nav className="fixed inset-x-0 top-0 z-50 px-3 pt-3 md:px-6 md:pt-4">
+      <div
+        className={`mx-auto flex max-w-[1240px] items-center justify-between rounded-full border border-white px-3 py-2 pl-5 transition-all duration-300 ${
+          scrolled ? 'bg-white/90 shadow-[0_8px_30px_-12px_rgba(54,86,95,0.35)] backdrop-blur' : 'bg-white/60 backdrop-blur'
+        }`}
+      >
+        <a href={homeUrl} className="flex items-center gap-2.5 text-[15px] font-semibold tracking-tight text-ink">
+          <span className="grid h-8 w-8 place-items-center rounded-full bg-slate text-white">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path d="M2 12h5l2-4 3 9 3-12 2 7h5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+          <span className="hidden sm:inline">{t('siteTitle')}</span>
+          <span className="sm:hidden">Dr. Vinograd</span>
         </a>
-        <div className="hidden md:flex items-center gap-8">
-          <a href={homeUrl + '#curriculum'} className="text-sm text-white/70 hover:text-white transition-colors">{t('curriculum')}</a>
-          <a href={homeUrl + '#lectures'} className="text-sm text-white/70 hover:text-white transition-colors">{t('lectures')}</a>
-          <a href={homeUrl + '#pricing'} className="text-sm text-white/70 hover:text-white transition-colors">{t('pricing')}</a>
-          <a href={homeUrl + '#connect'} className="text-sm text-white/70 hover:text-white transition-colors">{t('connect')}</a>
-          <div className="flex items-center gap-1 bg-white/10 rounded-full px-1 py-1">
-            <button onClick={() => switchLocale('en')} className={`px-3 py-1 rounded-full text-sm transition-all ${locale === 'en' ? 'bg-white text-[#0a0f1e] font-medium' : 'text-white/60 hover:text-white'}`}>EN</button>
-            <button onClick={() => switchLocale('ru')} className={`px-3 py-1 rounded-full text-sm transition-all ${locale === 'ru' ? 'bg-white text-[#0a0f1e] font-medium' : 'text-white/60 hover:text-white'}`}>RU</button>
-          </div>
-          <a href={locale === 'ru' ? '/ru/auth' : '/auth'} className="border border-white/20 hover:border-white/40 text-white/70 hover:text-white text-sm px-4 py-2 rounded-full transition-colors">
-            {locale === 'ru' ? 'Войти' : 'Sign In'}
-          </a>
+
+        <div className="hidden items-center gap-7 lg:flex">
+          {links.map(l => (
+            <a key={l.id} href={anchor(l.id)} className="text-sm text-graphite/80 transition-colors hover:text-ink">
+              {l.label}
+            </a>
+          ))}
         </div>
-        <button className="md:hidden text-white" onClick={() => setMenuOpen(!menuOpen)}>
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={menuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
+
+        <div className="hidden items-center gap-2 lg:flex">
+          <Lang />
+          <a href={locale === 'ru' ? '/ru/auth' : '/auth'} className="rounded-full px-4 py-2 text-sm text-graphite transition-colors hover:bg-mist">
+            {signIn}
+          </a>
+          {onCta ? (
+            <button onClick={onCta} className="group inline-flex items-center gap-2 rounded-full bg-slate py-1.5 pl-4 pr-1.5 text-sm font-medium text-white transition-colors hover:bg-ink">
+              {t('cta')}
+              <span className="grid h-7 w-7 place-items-center rounded-full bg-white text-slate transition-transform group-hover:rotate-45">
+                <Arrow className="h-3.5 w-3.5" />
+              </span>
+            </button>
+          ) : (
+            <a href={anchor('connect')} className="group inline-flex items-center gap-2 rounded-full bg-slate py-1.5 pl-4 pr-1.5 text-sm font-medium text-white transition-colors hover:bg-ink">
+              {t('cta')}
+              <span className="grid h-7 w-7 place-items-center rounded-full bg-white text-slate transition-transform group-hover:rotate-45">
+                <Arrow className="h-3.5 w-3.5" />
+              </span>
+            </a>
+          )}
+        </div>
+
+        <button className="grid h-10 w-10 place-items-center rounded-full bg-slate text-white lg:hidden" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
+          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={menuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 8h16M4 16h16'} />
           </svg>
         </button>
       </div>
+
       {menuOpen && (
-        <div className="md:hidden bg-[#0a0f1e] border-t border-white/10 px-6 py-4 flex flex-col gap-4">
-          <a href={homeUrl} className="text-white/70 hover:text-white" onClick={() => setMenuOpen(false)}>{t('siteTitle')}</a>
-          <a href={homeUrl + '#curriculum'} className="text-white/70 hover:text-white" onClick={() => setMenuOpen(false)}>{t('curriculum')}</a>
-          <a href={homeUrl + '#lectures'} className="text-white/70 hover:text-white" onClick={() => setMenuOpen(false)}>{t('lectures')}</a>
-          <div className="flex gap-2 mt-2">
-            <button onClick={() => switchLocale('en')} className={`px-3 py-1 rounded-full text-sm ${locale === 'en' ? 'bg-white text-[#0a0f1e]' : 'text-white/60'}`}>EN</button>
-            <button onClick={() => switchLocale('ru')} className={`px-3 py-1 rounded-full text-sm ${locale === 'ru' ? 'bg-white text-[#0a0f1e]' : 'text-white/60'}`}>RU</button>
+        <div className="mx-auto mt-2 max-w-[1240px] rounded-[28px] border border-white bg-white/95 p-5 shadow-xl backdrop-blur lg:hidden">
+          <div className="flex flex-col">
+            {links.map(l => (
+              <a
+                key={l.id}
+                href={anchor(l.id)}
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center justify-between border-b border-mist py-3.5 text-[17px] text-ink"
+              >
+                {l.label}
+                <Arrow className="text-muted" />
+              </a>
+            ))}
           </div>
+          <div className="mt-5 flex items-center justify-between gap-3">
+            <Lang big />
+            <a href={locale === 'ru' ? '/ru/auth' : '/auth'} className="rounded-full border border-ink/10 px-5 py-2 text-sm text-ink">
+              {signIn}
+            </a>
+          </div>
+          {onCta && (
+            <button
+              onClick={() => {
+                setMenuOpen(false);
+                onCta();
+              }}
+              className="mt-4 w-full rounded-full bg-slate py-3.5 text-[15px] font-medium text-white"
+            >
+              {t('cta')}
+            </button>
+          )}
         </div>
       )}
     </nav>

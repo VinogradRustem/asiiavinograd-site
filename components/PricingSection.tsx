@@ -1,5 +1,6 @@
 'use client';
 import { useTranslations } from 'next-intl';
+import { ArrowButton, Check, SectionHead } from './ui';
 
 export default function PricingSection() {
   const t = useTranslations('pricing');
@@ -16,69 +17,48 @@ export default function PricingSection() {
   }[];
 
   return (
-    <section id="pricing" className="py-24 px-6">
-      <div className="max-w-6xl mx-auto">
+    <section id="pricing" className="px-3 py-10 md:px-6 md:py-14">
+      <div className="mx-auto max-w-[1240px]">
+        <SectionHead eyebrow={t('badge')} title={t('title')} desc={t('subtitle')} center />
 
-        <div className="text-center mb-16">
-          <p className="text-[#f47c5a] text-sm uppercase tracking-widest mb-3">{t('badge')}</p>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">{t('title')}</h2>
-          <p className="text-white/50 text-lg max-w-2xl mx-auto">{t('subtitle')}</p>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-6">
-          {plans.map((plan) => (
-            <div
-              key={plan.name}
-              className={`relative rounded-2xl p-8 border transition-all flex flex-col ${
-                plan.highlight
-                  ? 'bg-[#f47c5a]/10 border-[#f47c5a]/60 shadow-lg shadow-[#f47c5a]/10'
-                  : 'bg-white/5 border-white/10 hover:border-white/20'
-              }`}
-            >
-              {plan.highlight && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="bg-[#f47c5a] text-white text-xs font-bold px-4 py-1 rounded-full">
-                    {t('popular')}
-                  </span>
-                </div>
-              )}
-
-              <div className="mb-6">
-                <p className="text-[#4ecdc4] text-xs uppercase tracking-widest mb-2">{plan.tag}</p>
-                <h3 className="text-xl font-bold text-white mb-1">{plan.name}</h3>
-                <div className="flex items-baseline gap-1 mt-3">
-                  <span className="text-3xl font-bold text-white">{plan.price}</span>
-                  <span className="text-white/40 text-sm">{plan.period}</span>
-                </div>
-                <p className="text-white/50 text-sm mt-2">{plan.desc}</p>
-              </div>
-
-              <ul className="space-y-3 mb-8 flex-1">
-                {plan.features.map((f, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-white/70">
-                    <span className="text-[#4ecdc4] mt-0.5 shrink-0">✓</span>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-
-              <a
-                href={plan.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`block text-center py-3 rounded-full font-medium text-sm transition-all ${
-                  plan.highlight
-                    ? 'bg-[#f47c5a] hover:bg-[#e06b49] text-white'
-                    : 'border border-white/20 hover:border-white/40 text-white'
+        <div className="mx-auto grid max-w-[980px] gap-3 md:grid-cols-2">
+          {plans.map(plan => {
+            const hi = plan.highlight;
+            return (
+              <div
+                key={plan.name}
+                className={`relative flex flex-col rounded-[28px] border p-7 md:p-9 ${
+                  hi ? 'border-steel bg-steel text-white' : 'border-white bg-white/60 text-ink'
                 }`}
               >
-                {plan.cta}
-              </a>
-            </div>
-          ))}
+                <div className="flex items-center justify-between">
+                  <span className={`rounded-full px-3 py-1 text-xs font-medium ${hi ? 'bg-white/15 text-white' : 'bg-mist text-slate'}`}>{plan.tag}</span>
+                  {hi && <span className="rounded-full bg-white px-3 py-1 text-xs font-medium text-slate">{t('popular')}</span>}
+                </div>
+                <h3 className="mt-6 text-[24px] font-medium tracking-[-0.02em]">{plan.name}</h3>
+                <p className={`mt-2 text-[15px] leading-relaxed ${hi ? 'text-white/75' : 'text-muted'}`}>{plan.desc}</p>
+                <div className="mt-7 flex items-baseline gap-1.5">
+                  <span className="text-[56px] font-medium leading-none tracking-[-0.04em]">{plan.price}</span>
+                  <span className={`text-sm ${hi ? 'text-white/70' : 'text-muted'}`}>{plan.period}</span>
+                </div>
+                <div className={`my-7 h-px ${hi ? 'bg-white/20' : 'bg-ink/10'}`} />
+                <ul className="mb-9 flex-1 space-y-3.5">
+                  {plan.features.map((f, i) => (
+                    <li key={i} className={`flex items-start gap-3 text-[15px] ${hi ? 'text-white/90' : 'text-graphite'}`}>
+                      <Check className={`mt-0.5 shrink-0 ${hi ? 'text-white' : 'text-slate'}`} />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <ArrowButton href={plan.url} external variant={hi ? 'light' : 'dark'} className="self-start">
+                  {plan.cta.replace(/\s*→\s*$/, '')}
+                </ArrowButton>
+              </div>
+            );
+          })}
         </div>
 
-        <p className="text-center text-white/30 text-sm mt-8">{t('note')}</p>
+        <p className="mt-8 text-center text-sm text-muted">{t('note')}</p>
       </div>
     </section>
   );

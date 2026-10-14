@@ -28,19 +28,19 @@ export default function AnkiPage() {
   return (
     <>
       <NavBar />
-      <main className="bg-[#0a0f1e] text-white min-h-screen font-sans">
+      <main className="page-bg text-ink min-h-screen font-sans">
         <div className="max-w-3xl mx-auto px-6 pt-32 pb-24">
 
-          <a href={isRu ? '/ru' : '/'} className="text-white/40 hover:text-white text-sm mb-12 transition-colors inline-block">
+          <a href={isRu ? '/ru' : '/'} className="text-muted hover:text-ink text-sm mb-12 transition-colors inline-block">
             ← {isRu ? 'Назад' : 'Back'}
           </a>
 
           {/* Header */}
-          <p className="text-[#f47c5a] text-sm uppercase tracking-widest mb-3">Anki</p>
+          <p className="text-slate text-sm uppercase tracking-widest mb-3">Anki</p>
           <h1 className="text-5xl md:text-6xl font-bold mb-6">
             {isRu ? 'Anki-карточки' : 'Anki Decks'}
           </h1>
-          <p className="text-white/50 text-lg leading-relaxed mb-4">
+          <p className="text-muted text-lg leading-relaxed mb-4">
             {isRu
               ? 'Одна большая колода охватывает все разделы USMLE — внутри уже всё разделено по темам и подтемам.'
               : 'One complete deck covering all USMLE disciplines — organized by topics and subtopics inside.'}
@@ -49,7 +49,7 @@ export default function AnkiPage() {
           {/* Sections list */}
           <div className="flex flex-wrap gap-2 mb-16">
             {SECTIONS.map((s) => (
-              <span key={s.en} className="text-xs px-3 py-1 rounded-full bg-[#f47c5a]/10 text-[#f47c5a] border border-[#f47c5a]/20">
+              <span key={s.en} className="text-xs px-3 py-1 rounded-full bg-slate/10 text-slate border border-steel/20">
                 {isRu ? s.ru : s.en}
               </span>
             ))}
@@ -62,7 +62,7 @@ export default function AnkiPage() {
                 href="https://patreon.com/drasiiavinograd"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-[#f47c5a] hover:bg-[#e06b49] text-white px-8 py-4 rounded-full font-medium transition-colors text-center"
+                className="bg-slate hover:bg-ink text-white px-8 py-4 rounded-full font-medium transition-colors text-center"
               >
                 Скачать на русском
               </a>
@@ -70,7 +70,7 @@ export default function AnkiPage() {
                 href="https://patreon.com/drasiiavinograd"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="border border-[#f47c5a]/40 hover:border-[#f47c5a] text-[#f47c5a] px-8 py-4 rounded-full font-medium transition-colors text-center"
+                className="border border-steel/40 hover:border-steel text-slate px-8 py-4 rounded-full font-medium transition-colors text-center"
               >
                 Скачать на английском
               </a>
@@ -80,13 +80,13 @@ export default function AnkiPage() {
               href="https://patreon.com/drasiiavinograd"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block bg-[#f47c5a] hover:bg-[#e06b49] text-white px-8 py-4 rounded-full font-medium transition-colors"
+              className="inline-block bg-slate hover:bg-ink text-white px-8 py-4 rounded-full font-medium transition-colors"
             >
               Download All Decks
             </a>
           )}
 
-          <p className="text-white/30 text-sm mt-6">
+          <p className="text-muted text-sm mt-6">
             {isRu
               ? 'Доступно бесплатно'
               : 'Available for free'}
