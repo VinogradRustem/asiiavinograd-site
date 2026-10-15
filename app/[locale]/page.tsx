@@ -9,6 +9,7 @@ import ProblemSection from '../../components/ProblemSection';
 import PricingSection from '../../components/PricingSection';
 import FaqSection from '../../components/FaqSection';
 import { Arrow, ArrowButton, Ecg, SectionHead } from '../../components/ui';
+import { BRANDS } from '../../components/SocialIcon';
 
 const YT = 'https://youtube.com/@USMLEforIMG';
 
@@ -29,7 +30,18 @@ export default function Home() {
   const englishFeatures = t.raw('curriculum.english_features') as string[];
   const lectureItems = t.raw('lectures.items') as { tag: string; title: string; desc: string; url: string; soon: boolean }[];
   const trending = t.raw('trending.items') as { title: string; desc: string; tag: string }[];
-  const platforms = t.raw('connect.platforms') as { name: string; sub: string; url: string }[];
+  const basePlatforms = t.raw('connect.platforms') as { name: string; sub: string; url: string }[];
+  const extra = ru
+    ? [
+        { name: 'Instagram', sub: 'Reels и сторис', url: 'https://instagram.com/asia.vinograd' },
+        { name: 'TikTok', sub: 'Короткие видео', url: 'https://www.tiktok.com/@dr.asiia.vinograd' },
+        { name: 'VK', sub: 'Группа ВКонтакте', url: 'https://vk.com/club238788574' },
+      ]
+    : [
+        { name: 'Instagram', sub: 'Reels & stories', url: 'https://instagram.com/dr.asiavinograd' },
+        { name: 'TikTok', sub: 'Short videos', url: 'https://www.tiktok.com/@drasiiavinograd' },
+      ];
+  const platforms = [...basePlatforms.slice(0, 1), ...extra.slice(0, 2), ...basePlatforms.slice(1), ...extra.slice(2)];
 
   const steps = ru
     ? [
@@ -368,21 +380,28 @@ export default function Home() {
               </div>
             </div>
             <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
-              {platforms.map(p => (
-                <a
-                  key={p.name}
-                  href={p.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex flex-col justify-between rounded-[20px] bg-white/10 p-4 ring-1 ring-white/15 transition-colors hover:bg-white hover:text-ink"
-                >
-                  <span className="flex items-center justify-between">
-                    <span className="text-[16px] font-medium">{p.name}</span>
-                    <Arrow className="opacity-60 transition-transform group-hover:rotate-45" />
-                  </span>
-                  <span className="mt-5 text-[13px] opacity-70">{p.sub}</span>
-                </a>
-              ))}
+              {platforms.map(p => {
+                const b = BRANDS[p.name] || BRANDS.Email;
+                return (
+                  <a
+                    key={p.name}
+                    href={p.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ background: b.bg }}
+                    className="group flex flex-col justify-between rounded-[20px] p-4 text-white shadow-[0_8px_24px_-14px_rgba(0,0,0,0.5)] ring-1 ring-white/15 transition-transform duration-200 hover:-translate-y-0.5"
+                  >
+                    <span className="flex items-center justify-between">
+                      <span className="grid h-10 w-10 place-items-center rounded-full bg-white/15">{b.icon}</span>
+                      <Arrow className="opacity-70 transition-transform group-hover:rotate-45" />
+                    </span>
+                    <span className="mt-4">
+                      <span className="block text-[16px] font-medium">{p.name}</span>
+                      <span className="block text-[13px] opacity-80">{p.sub}</span>
+                    </span>
+                  </a>
+                );
+              })}
             </div>
           </div>
         </div>

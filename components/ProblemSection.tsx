@@ -1,6 +1,6 @@
 'use client';
 import Image from 'next/image';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { Ecg } from './ui';
 import type { ReactElement } from 'react';
 
@@ -16,33 +16,12 @@ const ICONS: Record<(typeof keys)[number], ReactElement> = {
   alone: <path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 10a7 7 0 0 1 14 0m1-10a3 3 0 1 0 0-6m5 16a6 6 0 0 0-4-5.6" />,
 };
 
-const SOLUTIONS: Record<'ru' | 'en', Record<(typeof keys)[number], string>> = {
-  ru: {
-    chaos: 'Один план: какие ресурсы и в каком порядке',
-    language: 'Лекции на русском, термины на английском',
-    noSystem: 'Пошаговая программа Step 1 по разделам',
-    noProgress: 'Anki и задачи после каждой темы',
-    format: 'Разборы виньеток в формате USMLE',
-    alone: 'Сообщество в Telegram и Discord',
-  },
-  en: {
-    chaos: 'One plan: which resources, in which order',
-    language: 'Clear explanations with the exact USMLE terms',
-    noSystem: 'A step-by-step Step 1 roadmap by system',
-    noProgress: 'Anki and questions after every topic',
-    format: 'Vignette walkthroughs in real USMLE format',
-    alone: 'A community on Telegram and Discord',
-  },
-};
-
 export default function ProblemSection() {
   const t = useTranslations('problem');
-  const ru = useLocale() === 'ru';
-  const sol = SOLUTIONS[ru ? 'ru' : 'en'];
 
   return (
     <section id="why" className="px-3 py-10 md:px-6 md:py-14">
-      <div className="mx-auto grid max-w-[1240px] gap-3 lg:grid-cols-[0.9fr_1.6fr]">
+      <div className="mx-auto grid max-w-[1240px] gap-3 lg:grid-cols-[0.8fr_2fr]">
         <div className="card-dark relative flex flex-col justify-between overflow-hidden p-7 md:p-10">
           <div>
             <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-[13px] text-white/80">{t('badge')}</span>
@@ -60,28 +39,19 @@ export default function ProblemSection() {
           </div>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2">
-          {keys.map((key, i) => (
-            <div key={key} className="card group flex flex-col p-6 transition-colors hover:bg-white md:p-7">
-              <div className="flex items-center justify-between">
-                <span className="grid h-11 w-11 place-items-center rounded-2xl bg-mist text-slate transition-colors group-hover:bg-slate group-hover:text-white">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                    {ICONS[key]}
-                  </svg>
-                </span>
-                <span className="text-sm text-muted/70">{String(i + 1).padStart(2, '0')}</span>
-              </div>
-              <h3 className="mt-6 text-[19px] font-medium leading-snug tracking-[-0.01em] text-ink">{t(`items.${key}.title`)}</h3>
-              <p className="mt-2 flex-1 text-[15px] leading-relaxed text-muted">{t(`items.${key}.desc`)}</p>
-              <div className="mt-5 flex items-start gap-2.5 rounded-2xl bg-mist/80 px-4 py-3 text-[14px] leading-snug text-slate">
-                <svg className="mt-0.5 shrink-0" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
-                  <path d="M3.5 8.3L6.5 11.2L12.5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          {keys.map(key => (
+            <div key={key} className="card group relative flex flex-col overflow-hidden p-5 transition-colors hover:bg-white md:p-6">
+              <svg className="pointer-events-none absolute -bottom-6 -right-6 text-slate opacity-[0.06] transition-opacity group-hover:opacity-[0.1]" width="140" height="140" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                {ICONS[key]}
+              </svg>
+              <span className="grid h-11 w-11 place-items-center rounded-2xl bg-mist text-slate transition-colors group-hover:bg-slate group-hover:text-white">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  {ICONS[key]}
                 </svg>
-                <span>
-                  <span className="font-medium">{ru ? 'Решение: ' : 'Fix: '}</span>
-                  {sol[key]}
-                </span>
-              </div>
+              </span>
+              <h3 className="relative mt-5 text-[18px] font-medium leading-snug tracking-[-0.01em] text-ink">{t(`items.${key}.title`)}</h3>
+              <p className="relative mt-2 text-[14px] leading-relaxed text-muted">{t(`items.${key}.desc`)}</p>
             </div>
           ))}
         </div>
