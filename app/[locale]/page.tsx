@@ -93,7 +93,7 @@ export default function Home() {
             <div className="absolute inset-x-3 bottom-3 flex items-center justify-between gap-3 rounded-[22px] border border-white/60 bg-white/80 p-3 pl-5 backdrop-blur-md">
               <div>
                 <div className="text-[15px] font-medium text-ink">{ru ? 'Врач-кардиолог, исследователь' : 'Cardiologist & researcher'}</div>
-                <div className="text-[13px] text-muted">{ru ? 'Пхукет, Таиланд' : 'Phuket, Thailand'}</div>
+                <div className="text-[13px] text-muted">MD, PhD · USMLE Step 1</div>
               </div>
               <a
                 href={YT}

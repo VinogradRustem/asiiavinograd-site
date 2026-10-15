@@ -1,11 +1,44 @@
 'use client';
-import { useTranslations } from 'next-intl';
+import Image from 'next/image';
+import { useLocale, useTranslations } from 'next-intl';
 import { Ecg } from './ui';
+import type { ReactElement } from 'react';
 
-const keys = ['chaos', 'language', 'noSystem', 'noProgress', 'format', 'alone'];
+const keys = ['chaos', 'language', 'noSystem', 'noProgress', 'format', 'alone'] as const;
+
+/* Simple line icons, one per problem. */
+const ICONS: Record<(typeof keys)[number], ReactElement> = {
+  chaos: <path d="M4 7h16M4 12h10M4 17h6M17 14l3 3-3 3" />,
+  language: <path d="M4 5h8M8 3v2m-2.5 0c.6 3 2.6 5.5 5.5 7M10.5 5c-.6 3-2.6 5.5-5.5 7M13 21l4-9 4 9m-6.8-3h5.6" />,
+  noSystem: <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm3.5-12.5-2 5-5 2 2-5 5-2Z" />,
+  noProgress: <path d="M4 20V10m6 10V4m6 16v-7m4 7H2" />,
+  format: <path d="M7 3h7l5 5v13H7zM14 3v5h5M10 13h6M10 17h4" />,
+  alone: <path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 10a7 7 0 0 1 14 0m1-10a3 3 0 1 0 0-6m5 16a6 6 0 0 0-4-5.6" />,
+};
+
+const SOLUTIONS: Record<'ru' | 'en', Record<(typeof keys)[number], string>> = {
+  ru: {
+    chaos: 'Один план: какие ресурсы и в каком порядке',
+    language: 'Лекции на русском, термины на английском',
+    noSystem: 'Пошаговая программа Step 1 по разделам',
+    noProgress: 'Anki и задачи после каждой темы',
+    format: 'Разборы виньеток в формате USMLE',
+    alone: 'Сообщество в Telegram и Discord',
+  },
+  en: {
+    chaos: 'One plan: which resources, in which order',
+    language: 'Clear explanations with the exact USMLE terms',
+    noSystem: 'A step-by-step Step 1 roadmap by system',
+    noProgress: 'Anki and questions after every topic',
+    format: 'Vignette walkthroughs in real USMLE format',
+    alone: 'A community on Telegram and Discord',
+  },
+};
 
 export default function ProblemSection() {
   const t = useTranslations('problem');
+  const ru = useLocale() === 'ru';
+  const sol = SOLUTIONS[ru ? 'ru' : 'en'];
 
   return (
     <section id="why" className="px-3 py-10 md:px-6 md:py-14">
@@ -18,20 +51,37 @@ export default function ProblemSection() {
           </div>
           <div className="mt-10">
             <Ecg className="mb-6 h-12 w-full text-white/35" />
-            <p className="text-[17px] font-medium leading-snug text-white">{t('cta')}</p>
+            <div className="flex items-center gap-4 rounded-[22px] bg-white/10 p-3 pr-5 ring-1 ring-white/10">
+              <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full bg-steel">
+                <Image src="/asiia.jpg" alt="" fill sizes="56px" className="object-cover object-[50%_12%]" />
+              </div>
+              <p className="text-[15px] font-medium leading-snug text-white">{t('cta')}</p>
+            </div>
           </div>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
           {keys.map((key, i) => (
-            <div key={key} className="card group p-6 transition-colors hover:bg-white md:p-7">
-              <div className="mb-8 flex items-center justify-between">
-                <span className="grid h-10 w-10 place-items-center rounded-full bg-mist text-sm font-medium text-slate">
-                  {String(i + 1).padStart(2, '0')}
+            <div key={key} className="card group flex flex-col p-6 transition-colors hover:bg-white md:p-7">
+              <div className="flex items-center justify-between">
+                <span className="grid h-11 w-11 place-items-center rounded-2xl bg-mist text-slate transition-colors group-hover:bg-slate group-hover:text-white">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    {ICONS[key]}
+                  </svg>
+                </span>
+                <span className="text-sm text-muted/70">{String(i + 1).padStart(2, '0')}</span>
+              </div>
+              <h3 className="mt-6 text-[19px] font-medium leading-snug tracking-[-0.01em] text-ink">{t(`items.${key}.title`)}</h3>
+              <p className="mt-2 flex-1 text-[15px] leading-relaxed text-muted">{t(`items.${key}.desc`)}</p>
+              <div className="mt-5 flex items-start gap-2.5 rounded-2xl bg-mist/80 px-4 py-3 text-[14px] leading-snug text-slate">
+                <svg className="mt-0.5 shrink-0" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+                  <path d="M3.5 8.3L6.5 11.2L12.5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span>
+                  <span className="font-medium">{ru ? 'Решение: ' : 'Fix: '}</span>
+                  {sol[key]}
                 </span>
               </div>
-              <h3 className="text-[19px] font-medium leading-snug tracking-[-0.01em] text-ink">{t(`items.${key}.title`)}</h3>
-              <p className="mt-2.5 text-[15px] leading-relaxed text-muted">{t(`items.${key}.desc`)}</p>
             </div>
           ))}
         </div>
