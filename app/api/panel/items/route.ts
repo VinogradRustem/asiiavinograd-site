@@ -4,6 +4,12 @@ import { FORMATS, STATUSES, isPanelAuthed, panelDb } from '@/lib/panel'
 
 export const dynamic = 'force-dynamic'
 
+function cleanLinks(v: unknown): string[] {
+  if (!Array.isArray(v)) return []
+  return v.map(x => String(x || '').trim()).filter(u => /^https?:\/\/\S+$/i.test(u)).slice(0, 10).map(u => u.slice(0, 1000))
+}
+
+
 export async function GET() {
   if (!(await isPanelAuthed())) return new NextResponse('Not found', { status: 404 })
   const { data, error } = await panelDb()
@@ -30,6 +36,7 @@ export async function POST(req: NextRequest) {
     planned_for: b.planned_for || null,
     notes: b.notes ? String(b.notes).slice(0, 5000) : null,
     source: 'manual',
+    links: cleanLinks(b.links),
   }
   const { data, error } = await panelDb().from('content_items').insert(row).select().single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })

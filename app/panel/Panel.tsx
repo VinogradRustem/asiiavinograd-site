@@ -15,6 +15,7 @@ type Item = {
   platforms: Record<string, string | boolean | string[]>
   source: 'manual' | 'bot' | 'radar'
   notes: string | null
+  links?: string[]
   created_at: string
   updated_at: string
 }
@@ -141,6 +142,7 @@ export default function Panel({ userName }: { userName: string }) {
     const body = {
       title: it.title, lang: it.lang ?? null, format: it.format ?? null, status: it.status || 'idea',
       planned_for: it.planned_for || null, notes: it.notes ?? null,
+      links: (it.links || []).map(u => u.trim()).filter(Boolean),
     }
     const r = await fetch(isNew ? '/api/panel/items' : `/api/panel/items/${it.id}`, {
       method: isNew ? 'POST' : 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
@@ -220,7 +222,7 @@ export default function Panel({ userName }: { userName: string }) {
               {usedFormats.map(f => <option key={f} value={f}>{FORMAT_LABEL[f] || f}</option>)}
             </select>
             <input className="pl-search" placeholder="Поиск" value={q} onChange={e => setQ(e.target.value)} aria-label="Поиск" />
-            <button className="pl-add" onClick={() => setEdit({ status: 'idea', lang: null, format: null, title: '', notes: '' })}>+ Идея</button>
+            <button className="pl-add" onClick={() => setEdit({ status: 'idea', lang: null, format: null, title: '', notes: '', links: [] })}>+ Идея</button>
           </section>
 
           {!loaded ? (
@@ -298,6 +300,17 @@ function Tags({ i }: { i: Item }) {
   )
 }
 
+function linkName(u: string, n: number) {
+  try {
+    const h = new URL(u).hostname.replace(/^www\./, '')
+    if (h.includes('claude.ai')) return 'Claude'
+    if (h.includes('youtu')) return 'YouTube'
+    if (h.includes('instagram')) return 'Instagram'
+    if (h.includes('t.me')) return 'Telegram'
+    return h.split('.').slice(-2, -1)[0] || `Ссылка ${n + 1}`
+  } catch { return `Ссылка ${n + 1}` }
+}
+
 function Card({ i, onOpen, onDrag, onShot }: { i: Item; onOpen: () => void; onDrag: () => void; onShot?: () => void }) {
   const d = itemDate(i)
   const links = Object.entries(i.platforms || {}).filter(([k]) => k !== 'sources')
@@ -313,6 +326,13 @@ function Card({ i, onOpen, onDrag, onShot }: { i: Item; onOpen: () => void; onDr
         </span>
       )}
     </button>
+    {(i.links || []).length > 0 && (
+      <span className="pl-card-links">
+        {(i.links || []).map((u, n) => (
+          <a key={u + n} href={u} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}>{linkName(u, n)} ↗</a>
+        ))}
+      </span>
+    )}
     {onShot && (
       <button className="pl-shot" onClick={onShot} title="Видео загружено в бота: эта карточка больше не нужна, бот ведёт свою">
         Снято, видео в боте
@@ -458,6 +478,17 @@ function Editor({ it, onClose, onSave, onDelete }: {
             <input type="datetime-local" value={toLocalInput(f.planned_for || null)}
               onChange={e => setF({ ...f, planned_for: e.target.value ? new Date(e.target.value).toISOString() : null })} />
           </label>
+        </div>
+        <div className="pl-field">
+          <span>Ссылки на источник</span>
+          {(f.links && f.links.length ? f.links : ['']).map((u, n) => (
+            <div key={n} className="pl-link-row">
+              <input type="url" value={u} placeholder="https://claude.ai/... , статья, видео"
+                onChange={e => { const l = [...(f.links && f.links.length ? f.links : [''])]; l[n] = e.target.value; setF({ ...f, links: l }) }} />
+              {u.trim() && /^https?:\/\//.test(u.trim()) && <a href={u.trim()} target="_blank" rel="noreferrer" className="pl-chip">Открыть ↗</a>}
+            </div>
+          ))}
+          <button type="button" className="pl-link-add" onClick={() => setF({ ...f, links: [...(f.links && f.links.length ? f.links : ['']), ''] })}>+ ещё ссылка</button>
         </div>
         <label className="pl-field">
           <span>Заметки</span>

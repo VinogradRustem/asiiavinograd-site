@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { FORMATS, STATUSES, isPanelAuthed, panelDb } from '@/lib/panel'
 
+function cleanLinks(v: unknown): string[] {
+  if (!Array.isArray(v)) return []
+  return v.map(x => String(x || '').trim()).filter(u => /^https?:\/\/\S+$/i.test(u)).slice(0, 10).map(u => u.slice(0, 1000))
+}
+
+
 export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   if (!(await isPanelAuthed())) return new NextResponse('Not found', { status: 404 })
   const { id } = await ctx.params
@@ -14,6 +20,7 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
     if (b.status === 'published') patch.published_at = b.published_at || new Date().toISOString()
   }
   if ('planned_for' in b) patch.planned_for = b.planned_for || null
+  if ('links' in b) patch.links = cleanLinks(b.links)
   if ('notes' in b) patch.notes = b.notes ? String(b.notes).slice(0, 5000) : null
   const { data, error } = await panelDb().from('content_items').update(patch).eq('id', id).select().single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
