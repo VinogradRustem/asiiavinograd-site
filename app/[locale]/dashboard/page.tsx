@@ -79,7 +79,7 @@ export default function Dashboard() {
             </div>
             <a href="https://patreon.com/drasiiavinograd" target="_blank" rel="noopener noreferrer"
               className="bg-slate hover:bg-ink text-white px-6 py-2 rounded-xl text-sm font-medium transition-colors">
-              {isRu ? 'Улучшить' : 'Upgrade'} → $30/mo
+              {isRu ? 'Улучшить' : 'Upgrade'} → USMLE Club
             </a>
           </div>
         </div>

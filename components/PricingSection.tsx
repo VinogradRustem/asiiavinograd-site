@@ -21,7 +21,7 @@ export default function PricingSection() {
       <div className="mx-auto max-w-[1240px]">
         <SectionHead eyebrow={t('badge')} title={t('title')} desc={t('subtitle')} center />
 
-        <div className="mx-auto grid max-w-[980px] gap-3 md:grid-cols-2">
+        <div className="mx-auto grid max-w-[1240px] gap-3 md:grid-cols-2 lg:grid-cols-3">
           {plans.map(plan => {
             const hi = plan.highlight;
             return (

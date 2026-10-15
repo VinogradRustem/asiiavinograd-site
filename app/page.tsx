@@ -158,7 +158,7 @@ export default function Home() {
             {[
               { name: 'YouTube', sub: 'Free lectures', url: 'https://youtube.com/@USMLEforIMG' },
               { name: 'Telegram', sub: 'Free channel', url: 'https://t.me/usmle_vinograd' },
-              { name: 'Patreon', sub: '$30/month', url: 'https://patreon.com/drasiiavinograd' },
+              { name: 'Patreon', sub: 'USMLE Club', url: 'https://patreon.com/drasiiavinograd' },
               { name: 'Discord', sub: 'Study community', url: 'https://discord.gg/Yn4hrf5nH' },
               { name: 'LinkedIn', sub: 'Professional', url: 'https://linkedin.com/in/asiia-vinograd' },
               { name: 'Email', sub: 'Get in touch', url: 'mailto:usmleforimgs.drvinograd@gmail.com' },
