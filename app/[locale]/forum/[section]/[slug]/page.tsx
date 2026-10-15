@@ -83,6 +83,13 @@ export default async function TopicPage({ params }: P) {
                     <span>· {fmtDate(p.created_at, locale)}</span>
                   </div>
                   <div className="mt-3 whitespace-pre-line text-[15px] leading-relaxed text-graphite">{p.body}</div>
+                  {p.author_kind === 'team' && (
+                    <p className="mt-4 border-t border-mist pt-3 text-[12.5px] leading-relaxed text-muted">
+                      {ru
+                        ? 'Справочный ответ команды форума. Правила и сроки меняются: сверяйте детали на официальных сайтах, указанных в ответе.'
+                        : 'A reference answer from the forum team. Rules and deadlines change: check the details on the official sites named above.'}
+                    </p>
+                  )}
                 </div>
               ))}
               <ReplyForm lang={locale} topicId={t.id} />
