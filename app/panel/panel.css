@@ -301,3 +301,25 @@
 .pl-link-row { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
 .pl-link-row input { flex: 1; }
 .pl-link-add { align-self: flex-start; border: 0; background: none; padding: 2px 0; color: var(--navy); font-weight: 600; font-size: 13px; }
+
+/* Tasks */
+.pl-tasks { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.pl-task-col { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 18px; box-shadow: var(--shadow); }
+.pl-task-col > header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+.pl-task-col h2 { font-size: 18px; font-weight: 600; margin: 0; }
+.pl-task-col .pl-count { font-size: 13px; color: var(--ink-3); }
+.pl-task-add { display: flex; gap: 8px; margin-bottom: 12px; }
+.pl-task-add input { flex: 1; min-width: 0; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); border-radius: 10px; padding: 9px 12px; font: inherit; font-size: 14px; }
+.pl-task-add button { border: 0; background: var(--navy); color: #fff; border-radius: 10px; padding: 0 14px; font: inherit; font-size: 14px; cursor: pointer; }
+.pl-task-add button:disabled { opacity: .45; cursor: default; }
+.pl-task-col ul { list-style: none; margin: 0; padding: 0; }
+.pl-task-col li { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-top: 1px solid var(--line); }
+.pl-task-col li input[type=checkbox] { margin-top: 3px; width: 18px; height: 18px; accent-color: var(--navy); flex: none; cursor: pointer; }
+.pl-task-body { flex: 1; min-width: 0; }
+.pl-task-title { all: unset; cursor: pointer; font-size: 15px; line-height: 1.4; color: var(--ink); overflow-wrap: anywhere; }
+.pl-task-col li.done .pl-task-title { color: var(--ink-3); text-decoration: line-through; }
+.pl-task-notes { margin: 4px 0 0; font-size: 13px; line-height: 1.45; color: var(--ink-3); white-space: pre-wrap; }
+.pl-task-edit textarea { width: 100%; box-sizing: border-box; margin-top: 8px; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); border-radius: 10px; padding: 8px 10px; font: inherit; font-size: 13px; resize: vertical; }
+.pl-task-actions { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+.pl-task-actions button { border: 1px solid var(--line); background: transparent; color: var(--ink-2); border-radius: 8px; padding: 5px 10px; font: inherit; font-size: 12px; cursor: pointer; }
+.pl-task-actions button.danger { color: var(--danger); }

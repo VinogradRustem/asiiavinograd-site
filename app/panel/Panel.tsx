@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import './panel.css'
 import Shoot from './Shoot'
+import Tasks from './Tasks'
 
 type Item = {
   id: string
@@ -182,6 +183,7 @@ export default function Panel({ userName }: { userName: string }) {
         <nav className="pl-tabs" aria-label="Разделы">
           <button className={tab === 'shoot' ? 'on' : ''} onClick={() => setTab('shoot')}>Что снимать</button>
           <button className={tab === 'content' ? 'on' : ''} onClick={() => { setTab('content'); load() }}>Доска</button>
+          <button className={tab === 'tasks' ? 'on' : ''} onClick={() => setTab('tasks')}>Задачи</button>
           {LOCKED.map(l => (
             <button key={l.key} className={`locked ${tab === l.key ? 'on' : ''}`} onClick={() => setTab(l.key)}>
               <Lock /> {l.label}
@@ -194,6 +196,8 @@ export default function Panel({ userName }: { userName: string }) {
 
       {tab === 'shoot' ? (
         <Shoot onTaken={() => load()} onOpenBoard={() => { setTab('content'); load() }} />
+      ) : tab === 'tasks' ? (
+        <Tasks />
       ) : tab !== 'content' ? (
         <LockedTab info={LOCKED.find(l => l.key === tab)!} />
       ) : (
