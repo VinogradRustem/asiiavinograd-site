@@ -1,30 +1,31 @@
 import { MetadataRoute } from 'next'
+import { panelDb } from '@/lib/panel'
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  return [
-    {
-      url: 'https://drasiiavinograd.com',
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 1,
-    },
-    {
-      url: 'https://drasiiavinograd.com/ru',
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: 'https://drasiiavinograd.com/microbiology',
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: 'https://drasiiavinograd.com/microbiology/gram-positive-bacteria',
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
+export const revalidate = 3600
+
+const B = 'https://drasiiavinograd.com'
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const now = new Date()
+  const base: MetadataRoute.Sitemap = [
+    { url: B, lastModified: now, changeFrequency: 'weekly', priority: 1 },
+    { url: `${B}/ru`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${B}/microbiology`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${B}/microbiology/gram-positive-bacteria`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${B}/forum`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
+    { url: `${B}/ru/forum`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
   ]
+  try {
+    const db = panelDb()
+    const { data: secs } = await db.from('forum_sections').select('id')
+    for (const s of secs || []) {
+      base.push({ url: `${B}/forum/${s.id}`, lastModified: now, changeFrequency: 'daily', priority: 0.6 })
+      base.push({ url: `${B}/ru/forum/${s.id}`, lastModified: now, changeFrequency: 'daily', priority: 0.6 })
+    }
+    const { data: tops } = await db.from('forum_topics').select('section,lang,slug,last_at').eq('status', 'published').limit(5000)
+    for (const t of tops || []) {
+      base.push({ url: `${B}${t.lang === 'ru' ? '/ru' : ''}/forum/${t.section}/${t.slug}`, lastModified: new Date(t.last_at), changeFrequency: 'weekly', priority: 0.5 })
+    }
+  } catch {}
+  return base
 }
