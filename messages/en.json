@@ -335,8 +335,8 @@
           "Anki decks by discipline",
           "Personal mentoring session"
         ],
-        "cta": "Learn more",
-        "url": "https://t.me/usmle_vinograd",
+        "cta": "Book a session",
+        "url": "/consultation",
         "highlight": false
       }
     ]

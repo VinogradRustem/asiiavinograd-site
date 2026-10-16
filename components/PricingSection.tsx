@@ -50,7 +50,7 @@ export default function PricingSection() {
                     </li>
                   ))}
                 </ul>
-                <ArrowButton href={plan.url} external variant={hi ? 'light' : 'dark'} className="self-start">
+                <ArrowButton href={plan.url} external={plan.url.startsWith('http')} variant={hi ? 'light' : 'dark'} className="self-start">
                   {plan.cta.replace(/\s*→\s*$/, '')}
                 </ArrowButton>
               </div>
