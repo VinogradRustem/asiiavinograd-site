@@ -8,5 +8,5 @@ export default createMiddleware({
 });
 
 export const config = {
-  matcher: ['/((?!api|panel|_next|_vercel|.*\\..*).*)']
+  matcher: ['/((?!api|panel|braino|_next|_vercel|.*\\..*).*)']
 };
