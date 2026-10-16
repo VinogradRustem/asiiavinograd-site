@@ -310,7 +310,7 @@
         "name": "USMLE Club",
         "price": "$35",
         "period": "/month",
-        "desc": "Structured Step 1 prep in English: recorded lessons you watch at your own pace.",
+        "desc": "Structured Step 1 prep in English: recorded lessons you watch at your own pace. $35 for early members, then $50.",
         "features": [
           "Everything in Free",
           "2 recorded lessons a week by Step 1 discipline",
@@ -333,7 +333,7 @@
         "features": [
           "Study guide by Dr. Vinograd — $15",
           "Anki decks by discipline",
-          "Personal mentoring session"
+          "Mentoring session — from $40"
         ],
         "cta": "Book a session",
         "url": "/consultation",
@@ -355,7 +355,7 @@
       },
       {
         "q": "What is the difference between free and paid access?",
-        "a": "Free access includes YouTube lectures and question breakdowns, Telegram and support chats. USMLE Club ($35/month) adds 2 recorded lessons a week by Step 1 discipline, question breakdowns for every discipline, Anki decks, PDF lectures and a study plan. Study guides ($15) and mentoring sessions are available separately."
+        "a": "Free access includes YouTube lectures and question breakdowns, Telegram and support chats. USMLE Club ($35/month for early members, then $50) adds 2 recorded lessons a week by Step 1 discipline, question breakdowns for every discipline, Anki decks, PDF lectures and a study plan. Study guides ($15) and mentoring sessions (from $40) are available separately."
       },
       {
         "q": "Can I pay in rubles or other currencies?",

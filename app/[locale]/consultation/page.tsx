@@ -76,10 +76,13 @@ export default async function Consultation({ params }: { params: Promise<{ local
               <div className="mt-10">
                 <div className="text-[13px] text-white/60">{t('Стоимость', 'Price')}</div>
                 <div className="mt-2 flex items-baseline gap-2">
-                  <span className="text-[56px] font-medium leading-none tracking-[-0.04em]">{t('5000 ₽', '$60')}</span>
-                  <span className="text-sm text-white/65">{t('/ 60 минут', '/ 60 minutes')}</span>
+                  <span className="text-[56px] font-medium leading-none tracking-[-0.04em]">$40</span>
+                  <span className="text-sm text-white/65">{t('/ первая консультация', '/ first session')}</span>
                 </div>
               </div>
+              <p className="mt-3 text-[13px] leading-relaxed text-white/60">
+                {t('Дальше регулярные созвоны раз в месяц: $50–60.', 'Then regular monthly calls: $50–60.')}
+              </p>
               <ol className="mt-8 space-y-2.5">
                 {steps.map((s, i) => (
                   <li key={s} className="flex items-start gap-3 text-[14px] text-white/80">
