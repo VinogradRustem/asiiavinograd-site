@@ -81,7 +81,7 @@ export default function Booking({ lang }: { lang: string }) {
       ) : slots.length === 0 ? (
         <p className="mt-6 rounded-2xl bg-mist/70 p-5 text-[15px] text-graphite">
           {t('Свободного времени сейчас нет. Напишите в ', 'No free times right now. Message us on ')}
-          <a href="https://t.me/usmle_vinograd" className="underline underline-offset-4" target="_blank" rel="noopener noreferrer">Telegram</a>
+          <a href="https://t.me/usmle_img_community" className="underline underline-offset-4" target="_blank" rel="noopener noreferrer">Telegram</a>
           {t(', и мы подберём время.', ' and we will find a time.')}
         </p>
       ) : (

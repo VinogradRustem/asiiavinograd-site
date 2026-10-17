@@ -157,9 +157,9 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {[
               { name: 'YouTube', sub: 'Free lectures', url: 'https://youtube.com/@USMLEforIMG' },
-              { name: 'Telegram', sub: 'Free channel', url: 'https://t.me/usmle_vinograd' },
+              { name: 'Telegram', sub: 'Free community', url: 'https://t.me/usmle_img_community' },
               { name: 'Patreon', sub: 'USMLE Club', url: 'https://patreon.com/drasiiavinograd' },
-              { name: 'Discord', sub: 'Study community', url: 'https://discord.gg/Yn4hrf5nH' },
+              { name: 'Discord', sub: 'Study community', url: 'https://discord.gg/86urfUgPmF' },
               { name: 'LinkedIn', sub: 'Professional', url: 'https://linkedin.com/in/asiia-vinograd' },
               { name: 'Email', sub: 'Get in touch', url: 'mailto:usmleforimgs.drvinograd@gmail.com' },
             ].map(platform => (
@@ -178,7 +178,7 @@ export default function Home() {
             {[
               { name: 'YouTube', url: 'https://youtube.com/@USMLEforIMG' },
               { name: 'Patreon', url: 'https://patreon.com/drasiiavinograd' },
-              { name: 'Discord', url: 'https://discord.gg/Yn4hrf5nH' },
+              { name: 'Discord', url: 'https://discord.gg/86urfUgPmF' },
               { name: 'LinkedIn', url: 'https://linkedin.com/in/asiia-vinograd' },
             ].map(link => (
               <a key={link.name} href={link.url} target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white text-sm transition-colors">{link.name}</a>

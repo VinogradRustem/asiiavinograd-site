@@ -2,11 +2,18 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { Ecg } from './ui';
 
-const SOCIAL = [
+const SOCIAL_EN = [
   { name: 'YouTube', url: 'https://youtube.com/@USMLEforIMG' },
-  { name: 'Telegram', url: 'https://t.me/usmle_vinograd' },
+  { name: 'Discord', url: 'https://discord.gg/86urfUgPmF' },
   { name: 'Patreon', url: 'https://patreon.com/drasiiavinograd' },
-  { name: 'Discord', url: 'https://discord.gg/Yn4hrf5nH' },
+  { name: 'Instagram', url: 'https://instagram.com/dr.asiavinograd' },
+  { name: 'LinkedIn', url: 'https://linkedin.com/in/asiia-vinograd' },
+];
+const SOCIAL_RU = [
+  { name: 'YouTube', url: 'https://youtube.com/@asiiavinogradusmle' },
+  { name: 'Telegram', url: 'https://t.me/usmle_img_community' },
+  { name: 'USMLE Club', url: 'https://t.me/tribute/app?startapp=s18Vt' },
+  { name: 'Instagram', url: 'https://instagram.com/asia.vinograd' },
   { name: 'LinkedIn', url: 'https://linkedin.com/in/asiia-vinograd' },
 ];
 
@@ -68,7 +75,7 @@ export default function Footer() {
           <div>
             <div className="mb-4 text-xs uppercase tracking-[0.14em] text-white/40">{ru ? 'Соцсети' : 'Social'}</div>
             <ul className="space-y-2.5">
-              {SOCIAL.map(s => (
+              {(ru ? SOCIAL_RU : SOCIAL_EN).map(s => (
                 <li key={s.name}>
                   <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-sm text-white/75 transition-colors hover:text-white">
                     {s.name}

@@ -11,7 +11,8 @@ import FaqSection from '../../components/FaqSection';
 import { Arrow, ArrowButton, Ecg, SectionHead } from '../../components/ui';
 import { BRANDS } from '../../components/SocialIcon';
 
-const YT = 'https://youtube.com/@USMLEforIMG';
+const YT_EN = 'https://youtube.com/@USMLEforIMG';
+const YT_RU = 'https://youtube.com/@asiiavinogradusmle';
 
 function ytId(url: string) {
   const m = url.match(/(?:youtu\.be\/|v=)([\w-]{11})/);
@@ -22,6 +23,7 @@ export default function Home() {
   const t = useTranslations();
   const locale = useLocale();
   const ru = locale === 'ru';
+  const YT = ru ? YT_RU : YT_EN;
   const [modalOpen, setModalOpen] = useState(false);
   const openModal = () => setModalOpen(true);
 
@@ -34,7 +36,7 @@ export default function Home() {
   const extra = ru
     ? [
         { name: 'Instagram', sub: 'Reels и сторис', url: 'https://instagram.com/asia.vinograd' },
-        { name: 'TikTok', sub: 'Короткие видео', url: 'https://www.tiktok.com/@dr.asiia.vinograd' },
+        { name: 'TikTok', sub: 'Короткие видео', url: 'https://www.tiktok.com/@drasiiavinograd' },
         { name: 'VK', sub: 'Группа ВКонтакте', url: 'https://vk.com/club238788574' },
       ]
     : [
@@ -291,7 +293,7 @@ export default function Home() {
             desc={t('lectures.desc')}
             action={
               <ArrowButton href={YT} external variant="ghost">
-                YouTube @USMLEforIMG
+                {ru ? 'YouTube @asiiavinogradusmle' : 'YouTube @USMLEforIMG'}
               </ArrowButton>
             }
           />

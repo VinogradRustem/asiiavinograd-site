@@ -66,8 +66,8 @@ export default async function ForumHome({ params }: { params: Promise<{ locale: 
               <div className="mt-8">
                 <div className="text-[15px] font-medium">{ru ? 'Живое общение — в чатах' : 'Live chat'}</div>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  <a href="https://t.me/usmle_vinograd" target="_blank" rel="noopener noreferrer" className="rounded-full px-4 py-2 text-sm font-medium text-white" style={{ background: '#229ED9' }}>Telegram</a>
-                  <a href="https://discord.gg/Yn4hrf5nH" target="_blank" rel="noopener noreferrer" className="rounded-full px-4 py-2 text-sm font-medium text-white" style={{ background: '#5865F2' }}>Discord</a>
+                  <a href="https://t.me/usmle_img_community" target="_blank" rel="noopener noreferrer" className="rounded-full px-4 py-2 text-sm font-medium text-white" style={{ background: '#229ED9' }}>Telegram</a>
+                  <a href="https://discord.gg/86urfUgPmF" target="_blank" rel="noopener noreferrer" className="rounded-full px-4 py-2 text-sm font-medium text-white" style={{ background: '#5865F2' }}>Discord</a>
                 </div>
               </div>
             </div>

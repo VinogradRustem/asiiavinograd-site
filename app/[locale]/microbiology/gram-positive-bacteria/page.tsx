@@ -506,7 +506,7 @@ export default function GramPositiveBacteriaPage() {
           )}
 
           <div className="mt-16 pt-8 border-t border-white">
-            <a href={isRu ? "https://t.me/usmle_vinograd" : "https://discord.gg/Wz68kvvpk"} target="_blank" rel="noopener noreferrer" className="block bg-slate hover:bg-ink text-white px-8 py-3 rounded-full font-medium transition-colors text-center mb-6 sm:inline-block sm:w-auto">
+            <a href={isRu ? "https://t.me/usmle_img_community" : "https://discord.gg/86urfUgPmF"} target="_blank" rel="noopener noreferrer" className="block bg-slate hover:bg-ink text-white px-8 py-3 rounded-full font-medium transition-colors text-center mb-6 sm:inline-block sm:w-auto">
               {isRu ? 'Подписаться в Telegram' : 'Join our Discord community'}
             </a>
 
@@ -515,17 +515,16 @@ export default function GramPositiveBacteriaPage() {
             </p>
             <div className="flex flex-wrap gap-3">
               {(isRu ? [
-                { href: 'https://t.me/usmle_vinograd', label: 'Telegram · Канал' },
                 { href: 'https://t.me/usmle_img_community', label: 'Telegram · Сообщество' },
                 { href: 'https://dzen.ru/asiiavinograd', label: 'Яндекс.Дзен' },
                 { href: 'https://vk.ru/usmle_vinograd', label: 'VK' },
-                { href: 'https://www.tiktok.com/@dr.asiia.vinograd', label: 'TikTok' },
+                { href: 'https://www.tiktok.com/@drasiiavinograd', label: 'TikTok' },
                 { href: 'https://instagram.com/asia.vinograd', label: 'Instagram' },
                 { href: 'https://youtube.com/@asiiavinogradusmle', label: 'YouTube' },
                 { href: 'https://rutube.ru/channel/78455665/', label: 'RUTUBE' },
               ] : [
                 { href: 'https://www.youtube.com/@USMLEforIMG', label: 'YouTube' },
-                { href: 'https://discord.gg/Wz68kvvpk', label: 'Discord' },
+                { href: 'https://discord.gg/86urfUgPmF', label: 'Discord' },
                 { href: 'https://www.facebook.com/profile.php?id=61589813762652', label: 'Facebook · Page' },
                 { href: 'https://www.facebook.com/groups/usmleforimgs.vinograd', label: 'Facebook · Group' },
                 { href: 'https://instagram.com/dr.asiavinograd', label: 'Instagram' },
