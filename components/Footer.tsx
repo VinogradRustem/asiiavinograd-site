@@ -31,6 +31,8 @@ export default function Footer() {
         { name: t('nav.lectures'), url: `${home}#lectures` },
         { name: t('nav.pricing'), url: `${home}#pricing` },
         { name: 'FAQ', url: `${home}#faq` },
+        { name: ru ? 'Блог' : 'Blog', url: ru ? '/ru/blog' : '/blog' },
+        { name: ru ? 'Форум' : 'Forum', url: ru ? '/ru/forum' : '/forum' },
       ],
     },
     {

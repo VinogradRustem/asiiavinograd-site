@@ -1,4 +1,7 @@
 import { rssArticles } from "../../lib/rss-articles";
+import { getBlogPost, getBlogPosts, renderMd } from "../../lib/blog";
+
+export const revalidate = 600;
 
 function escapeXml(str: string) {
   return str
@@ -10,7 +13,31 @@ function escapeXml(str: string) {
 }
 
 export async function GET() {
-  const items = rssArticles
+  // Blog articles (RU) for Dzen: newest first, full text
+  let blogItems = "";
+  try {
+    const list = await getBlogPosts("ru", 20);
+    const full = await Promise.all(list.map((p) => getBlogPost("ru", p.slug)));
+    blogItems = full
+      .filter(Boolean)
+      .map((p) => {
+        const link = `https://www.drasiiavinograd.com/ru/blog/${p!.slug}`;
+        const body = renderMd(p!.body).html.replace(/ id="[^"]*"/g, "").replace(/ loading="lazy"/g, "");
+        const cover = p!.cover_url ? `<figure><img src="${p!.cover_url}"><figcaption>${escapeXml(p!.title)}</figcaption></figure>` : "";
+        return `
+    <item>
+      <title>${escapeXml(p!.title)}</title>
+      <link>${link}</link>
+      <guid>${link}</guid>
+      <pubDate>${new Date(p!.published_at).toUTCString()}</pubDate>
+      <category>native-draft</category>
+      ${p!.cover_url ? `<enclosure url="${p!.cover_url}" type="image/jpeg"/>` : ""}
+      <content:encoded><![CDATA[${cover}${body}]]></content:encoded>
+    </item>`;
+      })
+      .join("\n");
+  } catch {}
+  const items = blogItems + rssArticles
     .map((a) => {
       return `
     <item>

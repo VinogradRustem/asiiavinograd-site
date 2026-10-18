@@ -27,13 +27,14 @@ export default function NavBar({ onCta }: { onCta?: () => void }) {
   }, []);
 
   const homeUrl = locale === 'ru' ? '/ru' : '/';
-  const anchor = (id: string) => (id === 'forum' ? (locale === 'ru' ? '/ru/forum' : '/forum') : onCta ? `#${id}` : `${homeUrl}#${id}`);
+  const anchor = (id: string) => (id === 'forum' || id === 'blog' ? (locale === 'ru' ? `/ru/${id}` : `/${id}`) : onCta ? `#${id}` : `${homeUrl}#${id}`);
   const links = [
     { id: 'about', label: t('about') },
     { id: 'curriculum', label: t('curriculum') },
     { id: 'lectures', label: t('lectures') },
     { id: 'pricing', label: t('pricing') },
     { id: 'forum', label: locale === 'ru' ? 'Форум' : 'Forum' },
+    { id: 'blog', label: locale === 'ru' ? 'Блог' : 'Blog' },
     { id: 'connect', label: t('connect') },
   ];
   const signIn = locale === 'ru' ? 'Войти' : 'Sign In';

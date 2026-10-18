@@ -16,6 +16,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${B}/ru/forum`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
     { url: `${B}/consultation`, lastModified: now, changeFrequency: 'weekly', priority: 0.6 },
     { url: `${B}/ru/consultation`, lastModified: now, changeFrequency: 'weekly', priority: 0.6 },
+    { url: `${B}/blog`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
+    { url: `${B}/ru/blog`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
   ]
   try {
     const db = panelDb()
@@ -27,6 +29,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const { data: tops } = await db.from('forum_topics').select('section,lang,slug,last_at').eq('status', 'published').limit(5000)
     for (const t of tops || []) {
       base.push({ url: `${B}${t.lang === 'ru' ? '/ru' : ''}/forum/${t.section}/${t.slug}`, lastModified: new Date(t.last_at), changeFrequency: 'weekly', priority: 0.5 })
+    }
+    const { data: posts } = await db.from('blog_posts').select('lang,slug,updated_at').eq('status', 'published').limit(5000)
+    for (const p of posts || []) {
+      base.push({ url: `${B}${p.lang === 'ru' ? '/ru' : ''}/blog/${p.slug}`, lastModified: new Date(p.updated_at), changeFrequency: 'monthly', priority: 0.7 })
     }
   } catch {}
   return base
