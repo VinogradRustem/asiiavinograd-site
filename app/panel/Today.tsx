@@ -50,7 +50,7 @@ export default function Today({ userName }: { userName: string }) {
   const now = new Date()
   const [sel, setSel] = useState(iso(now))
   const [data, setData] = useState<Data | null>(null)
-  const [open, setOpen] = useState<number | null>(null)
+  const [open, setOpen] = useState<Record<number, boolean>>({})
   const [err, setErr] = useState('')
   const ws = weekStart(new Date(sel + 'T12:00:00'))
   const days = Array.from({ length: 7 }, (_, i) => iso(addDays(ws, i)))
@@ -107,7 +107,7 @@ export default function Today({ userName }: { userName: string }) {
           const pubs = pubOf(d).length
           const dt = new Date(d + 'T12:00:00')
           return (
-            <button key={d} className={`td-day ${d === sel ? 'on' : ''} ${d === iso(now) ? 'today' : ''}`} onClick={() => { setSel(d); setOpen(null) }}>
+            <button key={d} className={`td-day ${d === sel ? 'on' : ''} ${d === iso(now) ? 'today' : ''}`} onClick={() => { setSel(d); setOpen({}) }}>
               <span className="td-wd">{WD[i]}</span>
               <span className="td-dn">{dt.getDate()}</span>
               <span className="td-dots">
@@ -126,10 +126,10 @@ export default function Today({ userName }: { userName: string }) {
         <div className="td-main">
           {main.map(s => {
             const k = KIND[s.kind] || KIND.reels
-            const expanded = open === s.id || main.length === 1
+            const expanded = open[s.id] ?? s.status === 'todo'
             return (
               <article key={s.id} className={`td-card st-${s.status}`} style={{ ['--k' as string]: k.color }}>
-                <button className="td-card-head" onClick={() => setOpen(expanded && main.length > 1 ? null : s.id)}>
+                <button className="td-card-head" onClick={() => setOpen(o => ({ ...o, [s.id]: !expanded }))}>
                   <span className="td-ic"><Icon kind={s.kind} /></span>
                   <span className="td-card-tt">
                     <span className="td-kind">{k.label} · {s.length}</span>
@@ -195,8 +195,8 @@ export default function Today({ userName }: { userName: string }) {
           <div className="td-box">
             <h3>Ждут вас</h3>
             <ul className="td-list">
-              <li><b>{data?.consults.length ?? 0}</b>&nbsp;записей на консультацию</li>
-              <li><b>{data?.tasks.length ?? 0}</b>&nbsp;задач в списке</li>
+              <li>Записи на консультацию:&nbsp;<b>{data?.consults.length ?? 0}</b></li>
+              <li>Задачи в списке:&nbsp;<b>{data?.tasks.length ?? 0}</b></li>
               <li className="td-muted">Комментарии из соцсетей появятся здесь скоро</li>
             </ul>
             {data && data.consults[0] && (
