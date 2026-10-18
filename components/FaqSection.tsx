@@ -25,7 +25,7 @@ export default function FaqSection({ onAsk }: { onAsk?: () => void }) {
             </div>
           )}
           <div className="relative mt-8 hidden min-h-[260px] flex-1 overflow-hidden rounded-[22px] bg-steel lg:block">
-            <Image src="/asiia-faq.jpg" alt="Dr. Asiia Vinograd" fill sizes="420px" className="object-cover object-[50%_40%]" />
+            <Image src="/asiia-faq.jpg" alt="Dr. Asiia Vinograd" fill sizes="420px" className="object-cover object-[50%_80%]" />
           </div>
         </div>
 
