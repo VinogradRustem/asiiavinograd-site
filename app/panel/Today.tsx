@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 type Slot = {
   id: number; day: string; slot: number; kind: string; lang: string; title: string; hook: string | null
-  points: string[]; where_to: string[]; orient: string | null; length: string | null; status: 'todo' | 'done' | 'skip'
+  points: string[]; where_to: string[]; upload_to: string | null; orient: string | null; length: string | null; status: 'todo' | 'done' | 'skip'
 }
 type Pub = { id: string; title: string; format: string | null; lang: string | null; published_at: string }
 type Data = { plan: Slot[]; published: Pub[]; consults: { id: number; name: string; starts_at: string }[]; tasks: { id: number; title: string }[] }
@@ -15,8 +15,39 @@ const KIND: Record<string, { label: string; color: string; icon: React.ReactNode
   carousel: { label: 'Карусель', color: '#c08a1e', icon: <path d="M7 5h10v14H7zM4 7v10M20 7v10" /> },
   story: { label: 'Сторис', color: '#8a5cc4', icon: <circle cx="12" cy="12" r="7.5" /> },
   english: { label: 'Мед. английский', color: '#2e8b62', icon: <path d="M6 7h6M6 12h5M6 17h6M6 7v10M15 17V10l4 7V10" /> },
+  club_lecture: { label: 'Закрытая лекция', color: '#1f3f4a', icon: <path d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v9H5zM12 14.5v2.5" /> },
+  task: { label: 'Задача для клуба', color: '#c0392b', icon: <path d="M9 4h6v3H9zM6 6h12v15H6zM9 12l2 2 4-4" /> },
+  post: { label: 'Пост', color: '#2a8f8f', icon: <path d="M4 5h16v14H4zM4 15l4-4 4 4 3-3 5 5" /> },
+  threads: { label: 'Threads', color: '#3a3a3a', icon: <path d="M5 6h14v9H9l-4 4z" /> },
+  article: { label: 'Пост-статья', color: '#8a6a3c', icon: <path d="M6 4h12v16H6zM9 8h6M9 12h6M9 16h4" /> },
 }
-const FORMAT_KIND: Record<string, string> = { lecture: 'lecture', reels: 'reels', shorts: 'reels', carousel: 'carousel', story: 'story' }
+const PLAT: Record<string, { short: string; name: string }> = {
+  ig: { short: 'IG', name: 'Instagram' }, fb: { short: 'FB', name: 'Facebook' }, th: { short: 'TH', name: 'Threads' },
+  yt: { short: 'YT', name: 'YouTube' }, vk: { short: 'VK', name: 'ВКонтакте' }, tg: { short: 'TG', name: 'Telegram-группа' },
+  dc: { short: 'DC', name: 'Discord' }, club: { short: 'Клуб', name: 'Закрытый клуб в Telegram' },
+}
+const GROUPS: { title: string; kinds: string[] }[] = [
+  { title: 'Лекции', kinds: ['lecture', 'club_lecture'] },
+  { title: 'Для клуба', kinds: ['task'] },
+  { title: 'Соцсети', kinds: ['post', 'carousel', 'article', 'threads', 'reels', 'english'] },
+  { title: 'Сторис', kinds: ['story'] },
+]
+
+function Where({ s }: { s: Slot }) {
+  return (
+    <div className="td-where">
+      {s.where_to.map(w => {
+        const [k, what] = w.includes(':') ? [w.split(':')[0], w.split(':').slice(1).join(':')] : ['', w]
+        const p = PLAT[k]
+        return p
+          ? <span key={w} className="td-pl"><span className={`pl-plat p-${k}`} title={p.name}>{p.short}</span>{what}</span>
+          : <span key={w} className="td-chip">{w}</span>
+      })}
+      {s.upload_to && <span className="td-up">Загрузить в бота: «{s.upload_to}»</span>}
+    </div>
+  )
+}
+const FORMAT_KIND: Record<string, string> = { lecture: 'lecture', reels: 'reels', shorts: 'reels', carousel: 'carousel', story: 'story', post: 'post', threads: 'threads', article: 'article' }
 const WD = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
 
 function iso(d: Date) {
@@ -94,7 +125,7 @@ export default function Today({ userName }: { userName: string }) {
           <p className="td-sub">
             {todays.length === 0 ? (data ? 'На этот день съёмок нет. Можно отдохнуть.' : 'Загружаю план…')
               : done === todays.length ? 'Всё снято. Отличный день!'
-              : `Снять: ${todays.filter(s => s.status === 'todo').map(s => KIND[s.kind]?.label.toLowerCase()).join(', ')}`}
+              : `Осталось ${todays.filter(s => s.status === 'todo').length} из ${todays.length}: ${Array.from(new Set(todays.filter(s => s.status === 'todo').map(s => KIND[s.kind]?.label.toLowerCase()))).join(', ')}`}
           </p>
         </div>
         {todays.length > 0 && <Ring done={done} total={todays.length} />}
@@ -124,7 +155,14 @@ export default function Today({ userName }: { userName: string }) {
 
       <div className="td-grid">
         <div className="td-main">
-          {main.map(s => {
+          {GROUPS.filter(g => g.kinds[0] !== 'story').map(g => {
+            const list = main.filter(s => g.kinds.includes(s.kind))
+            if (!list.length) return null
+            const left = list.filter(s => s.status === 'todo').length
+            return (
+              <section key={g.title} className="td-group">
+                <h3 className="td-gh">{g.title}<span>{left ? `осталось ${left} из ${list.length}` : 'всё готово'}</span></h3>
+          {list.map(s => {
             const k = KIND[s.kind] || KIND.reels
             const expanded = open[s.id] ?? s.status === 'todo'
             return (
@@ -141,10 +179,8 @@ export default function Today({ userName }: { userName: string }) {
                   <div className="td-body">
                     {s.hook && <p className="td-hook">«{s.hook}»</p>}
                     {s.points?.length > 0 && <ul className="td-points">{s.points.map((p, i) => <li key={i}>{p}</li>)}</ul>}
-                    <div className="td-meta">
-                      <span className="td-orient">{s.orient}</span>
-                      {s.where_to.map(w => <span key={w} className="td-chip">{w}</span>)}
-                    </div>
+                    <div className="td-meta"><span className="td-orient">{s.orient}</span></div>
+                    <Where s={s} />
                   </div>
                 )}
                 <div className="td-actions">
@@ -157,7 +193,11 @@ export default function Today({ userName }: { userName: string }) {
               </article>
             )
           })}
+              </section>
+            )
+          })}
 
+          {stories.length > 0 && <h3 className="td-gh">Сторис<span>{stories.every(s => s.status === 'done') ? 'всё готово' : '5 штук в течение дня'}</span></h3>}
           {stories.map(s => (
             <article key={s.id} className={`td-card td-story st-${s.status}`} style={{ ['--k' as string]: KIND.story.color }}>
               <div className="td-card-head static">
@@ -169,6 +209,7 @@ export default function Today({ userName }: { userName: string }) {
                 {s.status === 'done' && <span className="td-badge">Снято</span>}
               </div>
               <ol className="td-frames">{s.points.map((p, i) => <li key={i}>{p}</li>)}</ol>
+              <div className="td-story-where"><Where s={s} /></div>
               <div className="td-actions">
                 {s.status !== 'done'
                   ? <button className="td-btn ok" onClick={() => patch(s.id, { status: 'done' })}>Снято</button>
