@@ -427,3 +427,36 @@
 .td-up { flex-basis: 100%; font-size: 12px; color: var(--ink-3); }
 .td-story-where { padding: 0 18px 0 78px; }
 @media (max-width: 860px) { .td-story-where { padding-left: 18px; } }
+
+/* ---------- Комментарии ---------- */
+.cm-wrap { display: flex; flex-direction: column; gap: 14px; }
+.cm-tab-n { display: inline-block; margin-left: 6px; min-width: 18px; padding: 0 5px; border-radius: 999px; background: #d64545; color: #fff; font-size: 11px; font-weight: 700; line-height: 18px; text-align: center; }
+.cm-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+.cm-plats { display: flex; flex-wrap: wrap; gap: 6px; }
+.cm-chip { display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 5px 10px; font-size: 13px; cursor: pointer; }
+.cm-chip.on { border-color: var(--navy); box-shadow: inset 0 0 0 1px var(--navy); }
+.cm-chip b { font-size: 12px; color: #d64545; }
+.cm-card { background: var(--surface); border-radius: 22px; box-shadow: var(--shadow); padding: 16px 18px 4px; }
+.cm-card.st-replied, .cm-card.st-hidden, .cm-card.st-spam { opacity: .75; }
+.cm-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.cm-lang { font-size: 10.5px; font-weight: 700; color: var(--ink-3); border: 1px solid var(--line); border-radius: 6px; padding: 0 4px; }
+.cm-author { font-size: 15px; }
+.cm-time { margin-left: auto; font-size: 12.5px; color: var(--ink-3); }
+.cm-post { display: block; margin-top: 4px; font-size: 12.5px; color: var(--ink-3); text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cm-post:hover { color: var(--ink); }
+.cm-text { margin: 10px 0 12px; font-size: 16px; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
+.cm-reply { width: 100%; box-sizing: border-box; border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; font: inherit; font-size: 15px; line-height: 1.45; background: var(--surface-2); color: var(--ink); resize: vertical; }
+.cm-reply:focus { outline: 2px solid var(--navy); outline-offset: 0; background: var(--surface); }
+.cm-actions { padding: 10px 0 14px; align-items: center; }
+.cm-actions a.td-btn { text-decoration: none; }
+.cm-sending { font-size: 14px; color: var(--ink-3); padding: 9px 4px; }
+.cm-error { margin: 8px 0 0; font-size: 13px; color: #c0392b; }
+.cm-replied { padding: 0 0 14px; }
+.cm-replied p { margin: 8px 0 0; padding-left: 12px; border-left: 3px solid var(--ok); color: var(--ink-2); font-size: 14.5px; white-space: pre-wrap; }
+.cm-empty { color: var(--ink-3); font-size: 15px; }
+.cm-sync { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 13.5px; }
+.cm-sync li { display: flex; gap: 10px; align-items: flex-start; }
+.cm-sync .pl-plat { margin-top: 2px; }
+.cm-ok { color: var(--ok); }
+.cm-wait { color: var(--ink-3); }
+@media (max-width: 860px) { .cm-time { margin-left: 0; } }

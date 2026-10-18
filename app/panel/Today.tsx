@@ -7,7 +7,7 @@ type Slot = {
   points: string[]; where_to: string[]; upload_to: string | null; orient: string | null; length: string | null; status: 'todo' | 'done' | 'skip'
 }
 type Pub = { id: string; title: string; format: string | null; lang: string | null; published_at: string }
-type Data = { plan: Slot[]; published: Pub[]; consults: { id: number; name: string; starts_at: string }[]; tasks: { id: number; title: string }[] }
+type Data = { plan: Slot[]; published: Pub[]; consults: { id: number; name: string; starts_at: string }[]; tasks: { id: number; title: string }[]; comments?: number }
 
 const KIND: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
   lecture: { label: 'Лекция', color: '#2f6fb3', icon: <path d="M4 6h16v10H4zM9 9.5v4l3.5-2z" /> },
@@ -238,7 +238,7 @@ export default function Today({ userName }: { userName: string }) {
             <ul className="td-list">
               <li>Записи на консультацию:&nbsp;<b>{data?.consults.length ?? 0}</b></li>
               <li>Задачи в списке:&nbsp;<b>{data?.tasks.length ?? 0}</b></li>
-              <li className="td-muted">Комментарии из соцсетей появятся здесь скоро</li>
+              <li>Комментарии без ответа:&nbsp;<b>{data?.comments ?? 0}</b></li>
             </ul>
             {data && data.consults[0] && (
               <p className="td-next">Ближайшая: {data.consults[0].name}, {new Date(data.consults[0].starts_at).toLocaleString('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</p>

@@ -6,6 +6,7 @@ import Shoot from './Shoot'
 import Tasks from './Tasks'
 import Consult from './Consult'
 import Today from './Today'
+import Comments from './Comments'
 
 type Item = {
   id: string
@@ -84,6 +85,10 @@ export default function Panel({ userName }: { userName: string }) {
   const [loaded, setLoaded] = useState(false)
   const [err, setErr] = useState('')
   const [tab, setTab] = useState('today')
+  const [cmOpen, setCmOpen] = useState(0)
+  useEffect(() => {
+    fetch('/api/panel/comments?box=count', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(d => d && setCmOpen(d.open || 0)).catch(() => {})
+  }, [])
   const [view, setView] = useState<'board' | 'calendar' | 'table'>('board')
   const [lang, setLang] = useState<'all' | 'ru' | 'en'>('all')
   const [format, setFormat] = useState('all')
@@ -184,6 +189,9 @@ export default function Panel({ userName }: { userName: string }) {
         </div>
         <nav className="pl-tabs" aria-label="Разделы">
           <button className={tab === 'today' ? 'on' : ''} onClick={() => setTab('today')}>Сегодня</button>
+          <button className={tab === 'comments' ? 'on' : ''} onClick={() => setTab('comments')}>
+            Комментарии{cmOpen > 0 && <span className="cm-tab-n">{cmOpen}</span>}
+          </button>
           <button className={tab === 'shoot' ? 'on' : ''} onClick={() => setTab('shoot')}>Идеи тем</button>
           <button className={tab === 'content' ? 'on' : ''} onClick={() => { setTab('content'); load() }}>Доска</button>
           <button className={tab === 'tasks' ? 'on' : ''} onClick={() => setTab('tasks')}>Задачи</button>
@@ -200,6 +208,8 @@ export default function Panel({ userName }: { userName: string }) {
 
       {tab === 'today' ? (
         <Today userName={userName} />
+      ) : tab === 'comments' ? (
+        <Comments onCount={setCmOpen} />
       ) : tab === 'shoot' ? (
         <Shoot onTaken={() => load()} onOpenBoard={() => { setTab('content'); load() }} />
       ) : tab === 'tasks' ? (
