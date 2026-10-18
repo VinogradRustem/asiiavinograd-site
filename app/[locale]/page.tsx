@@ -176,7 +176,7 @@ export default function Home() {
           <SectionHead eyebrow={t('about.tag')} title={t('about.title')} />
           <div className="grid gap-3 lg:grid-cols-[0.8fr_1.4fr]">
             <div className="relative min-h-[420px] overflow-hidden rounded-[28px] bg-steel">
-              <Image src="/asiia.jpg" alt="Dr. Asiia Vinograd" fill sizes="(min-width: 1024px) 460px, 100vw" className="object-cover object-[50%_15%]" />
+              <Image src="/asiia-book.jpg" alt="Dr. Asiia Vinograd" fill sizes="(min-width: 1024px) 460px, 100vw" className="object-cover object-[50%_20%]" />
               <div className="absolute left-3 top-3 rounded-full bg-white/85 px-4 py-2 text-[13px] font-medium text-slate backdrop-blur">
                 {ru ? 'Доктор Асия Виноград' : 'Dr. Asiia Vinograd'}
               </div>
