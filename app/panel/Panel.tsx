@@ -5,6 +5,7 @@ import './panel.css'
 import Shoot from './Shoot'
 import Tasks from './Tasks'
 import Consult from './Consult'
+import Today from './Today'
 
 type Item = {
   id: string
@@ -82,7 +83,7 @@ export default function Panel({ userName }: { userName: string }) {
   const [items, setItems] = useState<Item[]>([])
   const [loaded, setLoaded] = useState(false)
   const [err, setErr] = useState('')
-  const [tab, setTab] = useState('shoot')
+  const [tab, setTab] = useState('today')
   const [view, setView] = useState<'board' | 'calendar' | 'table'>('board')
   const [lang, setLang] = useState<'all' | 'ru' | 'en'>('all')
   const [format, setFormat] = useState('all')
@@ -182,7 +183,8 @@ export default function Panel({ userName }: { userName: string }) {
           </div>
         </div>
         <nav className="pl-tabs" aria-label="Разделы">
-          <button className={tab === 'shoot' ? 'on' : ''} onClick={() => setTab('shoot')}>Что снимать</button>
+          <button className={tab === 'today' ? 'on' : ''} onClick={() => setTab('today')}>Сегодня</button>
+          <button className={tab === 'shoot' ? 'on' : ''} onClick={() => setTab('shoot')}>Идеи тем</button>
           <button className={tab === 'content' ? 'on' : ''} onClick={() => { setTab('content'); load() }}>Доска</button>
           <button className={tab === 'tasks' ? 'on' : ''} onClick={() => setTab('tasks')}>Задачи</button>
           <button className={tab === 'consult' ? 'on' : ''} onClick={() => setTab('consult')}>Консультации</button>
@@ -196,7 +198,9 @@ export default function Panel({ userName }: { userName: string }) {
 
       {err && <div className="pl-err" role="alert">{err}</div>}
 
-      {tab === 'shoot' ? (
+      {tab === 'today' ? (
+        <Today userName={userName} />
+      ) : tab === 'shoot' ? (
         <Shoot onTaken={() => load()} onOpenBoard={() => { setTab('content'); load() }} />
       ) : tab === 'tasks' ? (
         <Tasks />
