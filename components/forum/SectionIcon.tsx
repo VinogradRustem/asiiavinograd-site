@@ -7,6 +7,7 @@ const P: Record<string, string> = {
   flag: 'M5 21V4m0 0h11l-2 4 2 4H5',
   users: 'M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 10a7 7 0 0 1 14 0m1-10a3 3 0 1 0 0-6m5 16a6 6 0 0 0-4-5.6',
   chat: 'M4 5h16v11H9l-5 4V5Zm4 5h8M8 13h5',
+  news: 'M5 4h12v16H6a2 2 0 0 1-2-2V8h3M8 8h6M8 12h6M8 16h4M17 9h3v9a2 2 0 0 1-2 2',
 };
 
 export default function SectionIcon({ name, size = 22 }: { name: string | null; size?: number }) {

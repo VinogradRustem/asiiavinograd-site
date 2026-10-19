@@ -28,6 +28,22 @@ function Badge({ kind, ru }: { kind: string; ru: boolean }) {
   return null;
 }
 
+/** URLs in topic text become links; guest links get nofollow/ugc. */
+function linkify(text: string, guest: boolean) {
+  return text.split(/(https?:\/\/[^\s<>"]+)/g).map((part, i) => {
+    if (!/^https?:\/\//.test(part)) return part;
+    const url = part.replace(/[.,;:)]+$/, '');
+    const tail = part.slice(url.length);
+    const own = url.startsWith('https://drasiiavinograd.com');
+    return (
+      <span key={i}>
+        <a href={url} className="underline underline-offset-4 hover:text-ink" target={own ? undefined : '_blank'}
+           rel={own ? undefined : guest ? 'nofollow ugc noopener' : 'noopener'}>{url.replace(/^https?:\/\/(www\.)?/, '').slice(0, 70)}</a>{tail}
+      </span>
+    );
+  });
+}
+
 export default async function TopicPage({ params }: P) {
   const { locale, section, slug } = await params;
   const ru = locale === 'ru';
@@ -68,7 +84,7 @@ export default async function TopicPage({ params }: P) {
                   <Badge kind={t.author_kind} ru={ru} />
                   <span>· {fmtDate(t.created_at, locale)}</span>
                 </div>
-                <div className="mt-6 whitespace-pre-line text-[16px] leading-relaxed text-graphite">{t.body}</div>
+                <div className="mt-6 whitespace-pre-line text-[16px] leading-relaxed text-graphite">{linkify(t.body, t.author_kind === 'guest')}</div>
               </article>
 
               <h2 className="mt-4 px-1 text-[20px] font-medium">
