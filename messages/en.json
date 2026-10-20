@@ -17,8 +17,8 @@
     "btn2": "Learn More",
     "stat1value": "4",
     "stat1label": "Publications",
-    "stat2value": "96+",
-    "stat2label": "Citations",
+    "stat2value": "90+",
+    "stat2label": "Citations (Scopus)",
     "stat3value": "4",
     "stat3label": "h-index (Hirsch)",
     "stat4value": "2.5yr",
@@ -52,7 +52,7 @@
         "sub": "Belebey Central District Hospital, 2021–2025"
       },
       {
-        "label": "Medical Coordinator",
+        "label": "International Patient Coordination Manager",
         "sub": "APEX Hospital Phuket, 2026–present"
       }
     ]

@@ -53,7 +53,7 @@ export default function Home() {
         <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl w-full">
           {[
             { value: '4', label: 'Publications' },
-            { value: '96+', label: 'Citations' },
+            { value: '90+', label: 'Citations (Scopus)' },
             { value: 'h-4', label: 'H-index' },
             { value: '2.5yr', label: 'NICU Experience' },
           ].map(stat => (
@@ -85,7 +85,7 @@ export default function Home() {
                   { label: 'Cardiology Residency', sub: 'BSMU, 2017–2019' },
                   { label: 'PhD Internal Medicine', sub: 'Harbin Medical University, China, 2022' },
                   { label: 'NICU Nurse', sub: "Republican Children's Hospital, Ufa, 2015–2017" },
-                  { label: 'Medical Coordinator', sub: 'APEX Hospital Phuket, 2026–present' },
+                  { label: 'International Patient Coordination Manager', sub: 'APEX Hospital Phuket, 2026–present' },
                 ].map(item => (
                   <div key={item.label} className="flex items-start gap-3">
                     <div className="w-1.5 h-1.5 bg-[#4ecdc4] rounded-full mt-2.5 shrink-0"></div>
