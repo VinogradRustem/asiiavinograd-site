@@ -55,7 +55,7 @@ export default function ContactModal({ isOpen, onClose, locale }: Props) {
       const res = await fetch('/api/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, countryCode }),
+        body: JSON.stringify({ ...form, countryCode, lang: isRu ? 'ru' : 'en' }),
       });
       if (res.ok) setSent(true);
       else alert(isRu ? 'Что-то пошло не так.' : 'Something went wrong.');

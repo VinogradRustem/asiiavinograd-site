@@ -24,6 +24,7 @@ export default function Home() {
   const locale = useLocale();
   const ru = locale === 'ru';
   const YT = ru ? YT_RU : YT_EN;
+  const lp = (path: string) => (ru ? `/ru${path}` : path); // keep the visitor in their language
   const [modalOpen, setModalOpen] = useState(false);
   const openModal = () => setModalOpen(true);
 
@@ -210,7 +211,7 @@ export default function Home() {
           <SectionHead eyebrow={t('curriculum.tag')} title={t('curriculum.title')} desc={t('curriculum.desc')} />
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {curriculumItems.map((item, i) => (
-              <a key={item.title} href={`/${item.slug}`} className="card group flex flex-col p-6 transition-colors hover:bg-white md:p-7">
+              <a key={item.title} href={lp(`/${item.slug}`)} className="card group flex flex-col p-6 transition-colors hover:bg-white md:p-7">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-steel">{String(i + 1).padStart(2, '0')}</span>
                   <div className="flex items-center gap-2">
@@ -239,7 +240,7 @@ export default function Home() {
 
           {/* Anki · Cases · Medical English */}
           <div className="mt-3 grid gap-3 lg:grid-cols-3">
-            <a href="/anki" className="group flex flex-col rounded-[28px] bg-ink p-7 text-white transition-colors hover:bg-graphite md:p-9">
+            <a href={lp('/anki')} className="group flex flex-col rounded-[28px] bg-ink p-7 text-white transition-colors hover:bg-graphite md:p-9">
               <span className="text-sm text-white/45">01</span>
               <h3 className="mt-8 text-[30px] font-medium leading-tight tracking-[-0.03em] md:text-[34px]">{t('curriculum.anki_title')}</h3>
               <p className="mt-3 flex-1 text-[15px] leading-relaxed text-white/60">{t('curriculum.anki_desc')}</p>
@@ -250,7 +251,7 @@ export default function Home() {
                 </span>
               </span>
             </a>
-            <a href="/cases" className="group flex flex-col rounded-[28px] bg-steel p-7 text-white transition-colors hover:bg-slate md:p-9">
+            <a href={lp('/cases')} className="group flex flex-col rounded-[28px] bg-steel p-7 text-white transition-colors hover:bg-slate md:p-9">
               <span className="text-sm text-white/55">02</span>
               <h3 className="mt-8 text-[30px] font-medium leading-tight tracking-[-0.03em] md:text-[34px]">{t('curriculum.cases_title')}</h3>
               <p className="mt-3 flex-1 text-[15px] leading-relaxed text-white/75">{t('curriculum.cases_desc')}</p>
@@ -261,7 +262,7 @@ export default function Home() {
                 </span>
               </span>
             </a>
-            <a href="/medical-english" className="card-solid group flex flex-col p-7 transition-shadow hover:shadow-lg md:p-9">
+            <a href={lp('/medical-english')} className="card-solid group flex flex-col p-7 transition-shadow hover:shadow-lg md:p-9">
               <span className="text-sm text-steel">03</span>
               <h3 className="mt-8 text-[30px] font-medium leading-tight tracking-[-0.03em] text-ink md:text-[34px]">{t('curriculum.english_title')}</h3>
               <p className="mt-3 text-[15px] leading-relaxed text-muted">{t('curriculum.english_desc')}</p>

@@ -38,9 +38,9 @@ export default function Footer() {
     {
       title: ru ? 'Материалы' : 'Resources',
       links: [
-        { name: t('curriculum.anki_title'), url: '/anki' },
-        { name: t('curriculum.cases_title'), url: '/cases' },
-        { name: t('curriculum.english_title'), url: '/medical-english' },
+        { name: t('curriculum.anki_title'), url: ru ? '/ru/anki' : '/anki' },
+        { name: t('curriculum.cases_title'), url: ru ? '/ru/cases' : '/cases' },
+        { name: t('curriculum.english_title'), url: ru ? '/ru/medical-english' : '/medical-english' },
         { name: ru ? 'Консультация' : 'Mentoring session', url: ru ? '/ru/consultation' : '/consultation' },
         { name: ru ? 'Личный кабинет' : 'Student account', url: ru ? '/ru/auth' : '/auth' },
       ],

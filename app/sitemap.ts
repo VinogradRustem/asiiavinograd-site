@@ -19,6 +19,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${B}/blog`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
     { url: `${B}/ru/blog`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
   ]
+  // section pages (app/[locale]/[section]) and resources
+  for (const s of ['pharmacology', 'cardiology', 'pathology', 'gi-hepatology', 'immunology', 'nephrology-pulmonology', 'neurology-psychiatry',
+                   'gastroenterology', 'cases', 'labs', 'medical-english', 'anki']) {
+    base.push({ url: `${B}/${s}`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 })
+    base.push({ url: `${B}/ru/${s}`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 })
+  }
   try {
     const db = panelDb()
     const { data: secs } = await db.from('forum_sections').select('id')
