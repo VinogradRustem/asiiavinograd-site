@@ -10,6 +10,7 @@ import PricingSection from '../../components/PricingSection';
 import FaqSection from '../../components/FaqSection';
 import { Arrow, ArrowButton, Ecg, SectionHead } from '../../components/ui';
 import { BRANDS } from '../../components/SocialIcon';
+import LECTURES from '../../data/lectures.json';
 
 const YT_EN = 'https://youtube.com/@USMLEforIMG';
 const YT_RU = 'https://youtube.com/@asiiavinogradusmle';
@@ -31,7 +32,12 @@ export default function Home() {
   const aboutItems = t.raw('about.items') as { label: string; sub: string }[];
   const curriculumItems = t.raw('curriculum.items') as { title: string; topics: string; free: boolean; slug: string }[];
   const englishFeatures = t.raw('curriculum.english_features') as string[];
-  const lectureItems = t.raw('lectures.items') as { tag: string; title: string; desc: string; url: string; soon: boolean }[];
+  const SEC_RU: Record<string, string> = { 'nephrology-pulmonology': 'Нефрология и пульмонология', immunology: 'Иммунология', 'gi-hepatology': 'ЖКТ',
+    pharmacology: 'Фармакология', labs: 'Анализы', pathology: 'Патология', cases: 'Разбор задач' };
+  const lectureItems = ru
+    ? (LECTURES as { yt: string; ru: string; en: string; sections: string[] }[]).slice(-6).reverse().map((l) => ({
+        tag: `${SEC_RU[l.sections[0]] || 'USMLE'} · Step 1`, title: l.ru, desc: '', url: `https://www.youtube.com/watch?v=${l.yt}`, soon: false }))
+    : (t.raw('lectures.items') as { tag: string; title: string; desc: string; url: string; soon: boolean }[]);
   const trending = t.raw('trending.items') as { title: string; desc: string; tag: string }[];
   const basePlatforms = t.raw('connect.platforms') as { name: string; sub: string; url: string }[];
   const extra = ru
@@ -344,13 +350,13 @@ export default function Home() {
           </div>
 
           {/* Trending */}
-          <div id="trending" className="card-dark mt-3 grid gap-6 p-7 md:grid-cols-[0.8fr_2fr] md:p-10">
+          <div id="trending" className="card-dark mt-3 grid gap-6 p-7 md:p-10 lg:grid-cols-[0.8fr_2fr]">
             <div>
               <span className="inline-flex rounded-full bg-white/10 px-3.5 py-1.5 text-[13px] text-white/80">{t('trending.tag')}</span>
               <h3 className="mt-5 text-[30px] font-medium leading-tight tracking-[-0.03em] md:text-[38px]">{t('trending.title')}</h3>
               <p className="mt-3 text-[15px] leading-relaxed text-white/60">{t('trending.desc')}</p>
             </div>
-            <div className="grid gap-3 sm:grid-cols-3">
+            <div className="grid gap-3 sm:grid-cols-3 md:grid-cols-3">
               {trending.map(item => (
                 <div key={item.title} className="rounded-[22px] bg-white/[0.07] p-5 ring-1 ring-white/10">
                   <span className="text-[12px] text-white/50">{item.tag}</span>

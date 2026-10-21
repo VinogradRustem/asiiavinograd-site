@@ -38,12 +38,12 @@ export async function POST(req: NextRequest) {
     '',
     `Имя: ${name}`,
     `WhatsApp: ${whatsapp}`,
-    email && `Email: ${email}`,
-    telegram && `Telegram: ${telegram}`,
-    message && `Сообщение: ${message}`,
+    email ? `Email: ${email}` : null,
+    telegram ? `Telegram: ${telegram}` : null,
+    message ? `Сообщение: ${message}` : null,
     '',
     new Date().toLocaleString('ru-RU', { timeZone: 'Asia/Bangkok' }) + ' (Пхукет)',
-  ].filter((x) => x !== '' && x !== null && x !== undefined && x !== false).join('\n');
+  ].filter((x): x is string => x !== null).join('\n');
 
   const token = process.env.TELEGRAM_LEADS_TOKEN;
   const chat = process.env.TELEGRAM_LEADS_CHAT;
