@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Arrow } from './ui';
+import { supabase } from '../lib/supabase';
 
 export function switchLocale(newLocale: string) {
   const path = window.location.pathname;
@@ -18,6 +19,11 @@ export default function NavBar({ onCta }: { onCta?: () => void }) {
   const locale = useLocale();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [authed, setAuthed] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setAuthed(!!data.session)).catch(() => {});
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -37,7 +43,8 @@ export default function NavBar({ onCta }: { onCta?: () => void }) {
     { id: 'blog', label: locale === 'ru' ? 'Блог' : 'Blog' },
     { id: 'connect', label: t('connect') },
   ];
-  const signIn = locale === 'ru' ? 'Войти' : 'Sign In';
+  const signIn = authed ? (locale === 'ru' ? 'Кабинет' : 'My account') : locale === 'ru' ? 'Войти' : 'Sign In';
+  const signInUrl = authed ? (locale === 'ru' ? '/ru/dashboard' : '/dashboard') : locale === 'ru' ? '/ru/auth' : '/auth';
 
   const Lang = ({ big }: { big?: boolean }) => (
     <div className="flex items-center gap-0.5 rounded-full bg-mist p-0.5">
@@ -82,7 +89,7 @@ export default function NavBar({ onCta }: { onCta?: () => void }) {
 
         <div className="hidden items-center gap-2 lg:flex">
           <Lang />
-          <a href={locale === 'ru' ? '/ru/auth' : '/auth'} className="rounded-full px-4 py-2 text-sm text-graphite transition-colors hover:bg-mist">
+          <a href={signInUrl} className="rounded-full px-4 py-2 text-sm text-graphite transition-colors hover:bg-mist">
             {signIn}
           </a>
           {onCta ? (
@@ -126,7 +133,7 @@ export default function NavBar({ onCta }: { onCta?: () => void }) {
           </div>
           <div className="mt-5 flex items-center justify-between gap-3">
             <Lang big />
-            <a href={locale === 'ru' ? '/ru/auth' : '/auth'} className="rounded-full border border-ink/10 px-5 py-2 text-sm text-ink">
+            <a href={signInUrl} className="rounded-full border border-ink/10 px-5 py-2 text-sm text-ink">
               {signIn}
             </a>
           </div>
