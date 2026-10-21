@@ -1,0 +1,23 @@
+// Fonts with Cyrillic, bundled from @fontsource (no network at render time)
+import '@fontsource/unbounded/cyrillic-700.css';
+import '@fontsource/unbounded/cyrillic-900.css';
+import '@fontsource/unbounded/latin-700.css';
+import '@fontsource/unbounded/latin-900.css';
+import '@fontsource/montserrat/cyrillic-700.css';
+import '@fontsource/montserrat/cyrillic-900.css';
+import '@fontsource/montserrat/latin-700.css';
+import '@fontsource/montserrat/latin-900.css';
+import '@fontsource/oswald/cyrillic-700.css';
+import '@fontsource/oswald/latin-700.css';
+import '@fontsource/russo-one/cyrillic-400.css';
+import '@fontsource/russo-one/latin-400.css';
+import '@fontsource/playfair-display/cyrillic-800.css';
+import '@fontsource/playfair-display/latin-800.css';
+import '@fontsource/manrope/cyrillic-800.css';
+import '@fontsource/manrope/latin-800.css';
+import '@fontsource/rubik/cyrillic-500.css';
+import '@fontsource/rubik/cyrillic-700.css';
+import '@fontsource/rubik/latin-500.css';
+import '@fontsource/rubik/latin-700.css';
+import '@fontsource/caveat/cyrillic-700.css';
+import '@fontsource/caveat/latin-700.css';
