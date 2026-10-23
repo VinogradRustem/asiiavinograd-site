@@ -17,3 +17,7 @@ export async function POST(req: NextRequest) {
   if (error) return NextResponse.json({ error: 'failed' }, { status: 500 });
   return NextResponse.json({ url: `https://t.me/${BOT}?start=link_${token}`, check: `https://t.me/${BOT}?start=check` });
 }
+
+export async function GET() {
+  return NextResponse.json({ bot: BOT });
+}

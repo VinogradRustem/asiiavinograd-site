@@ -20,7 +20,6 @@ const PATREON = 'https://patreon.com/drasiiavinograd';
 const FREE_TG = 'https://t.me/usmle_img_community';
 const DISCORD = 'https://discord.gg/86urfUgPmF';
 const STAGES = ['start', 'step1', 'step2', 'match', 'other'];
-const BOT = 'asiia_content_ru_bot';
 
 export default function Dashboard() {
   const locale = useLocale();
@@ -39,6 +38,8 @@ export default function Dashboard() {
   const [saving, setSaving] = useState(false);
   const [open, setOpen] = useState<string | null>(null);
   const [linking, setLinking] = useState(false);
+  const [BOT, setBot] = useState('asiia_content_ru_bot');
+  useEffect(() => { fetch('/api/tg-link').then((r) => r.json()).then((j) => j.bot && setBot(j.bot)).catch(() => {}); }, []);
 
   // «Connect Telegram»: the site gets a one-time link, the bot binds the account and checks the club group.
   const connectTg = async () => {
