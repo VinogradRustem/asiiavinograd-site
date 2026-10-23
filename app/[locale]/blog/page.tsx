@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import NavBar from '@/components/NavBar';
 import Footer from '@/components/Footer';
-import { blogBase, fmtBlogDate, getBlogPosts } from '@/lib/blog';
+import { blogBase, fmtBlogDate, getBlogPosts, isPathPost } from '@/lib/blog';
+import { getPinnedDiary } from '@/lib/forum';
 
 export const revalidate = 300;
 
@@ -21,8 +22,11 @@ export default async function BlogHome({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   const ru = locale === 'ru';
   const base = blogBase(locale);
-  const posts = await getBlogPosts(locale);
+  const [all, diary] = await Promise.all([getBlogPosts(locale, 90), getPinnedDiary(locale)]);
+  const path = all.filter(isPathPost).sort((a, b) => a.published_at.localeCompare(b.published_at));
+  const posts = all.filter(p => !isPathPost(p));
   const [first, ...rest] = posts;
+  const forum = ru ? '/ru/forum' : '/forum';
 
   return (
     <>
@@ -41,6 +45,40 @@ export default async function BlogHome({ params }: { params: Promise<{ locale: s
                   : 'Discoveries, unusual clinical cases and health news. Each article covers what happened, why it matters and the high-yield facts worth knowing for the exam.'}
               </p>
             </div>
+
+            {(path.length > 0 || diary) && (
+              <div className="card-dark mt-3 p-7 md:p-10">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="rounded-full bg-white/15 px-3 py-1 text-[12px] font-medium">{ru ? 'Закреплено' : 'Pinned'}</span>
+                  <span className="text-[13px] text-white/60">{ru ? 'Серия' : 'Series'}</span>
+                </div>
+                <h2 className="mt-4 text-[28px] font-medium leading-tight tracking-[-0.03em] md:text-[38px]">{ru ? 'Путь врача в США' : 'A doctor’s path to the US'}</h2>
+                <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-white/70">
+                  {ru ? 'Шаг за шагом показываем, что делает доктор Асия Виноград на пути к работе врачом в США: документы, экзамены, научный профиль.'
+                    : 'Step by step: what Dr. Asiia Vinograd does on her way to practicing in the US — documents, exams, research profile.'}
+                </p>
+                {path.length > 0 && (
+                  <ol className="mt-6 grid gap-2.5 md:grid-cols-2">
+                    {path.map((p, i) => (
+                      <li key={p.id}>
+                        <a href={`${base}/${p.slug}`} className="flex h-full items-start gap-4 rounded-[20px] bg-white/10 p-5 transition-colors hover:bg-white/15">
+                          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white text-[14px] font-medium text-ink">{i + 1}</span>
+                          <span>
+                            <span className="block text-[16px] font-medium leading-snug">{p.title}</span>
+                            <span className="mt-1 block text-[12.5px] text-white/55">{fmtBlogDate(p.published_at, locale)} · {p.reading_min} {ru ? 'мин' : 'min'}</span>
+                          </span>
+                        </a>
+                      </li>
+                    ))}
+                  </ol>
+                )}
+                {diary && (
+                  <a href={`${forum}/${diary.section}/${diary.slug}`} className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-[14px] font-medium text-ink">
+                    {ru ? 'Дневник и вопросы на форуме →' : 'Diary and questions on the forum →'}
+                  </a>
+                )}
+              </div>
+            )}
 
             {!posts.length && (
               <div className="card-solid mt-3 p-8 text-graphite">{ru ? 'Первые статьи скоро появятся.' : 'The first articles are coming soon.'}</div>

@@ -3,11 +3,14 @@ import { panelDb } from './panel';
 export type BlogPost = {
   id: number; lang: string; slug: string; title: string; description: string; body: string;
   cover_url: string | null; cover_credit: string | null; images: { url: string; alt: string; credit: string }[];
-  keywords: string[]; source_name: string | null; source_url: string | null; pair_slug: string | null;
+  keywords: string[]; news_key?: string | null; source_name: string | null; source_url: string | null; pair_slug: string | null;
   reading_min: number; published_at: string; updated_at: string;
 };
 
-const LIST = 'id,lang,slug,title,description,cover_url,reading_min,published_at,keywords';
+const LIST = 'id,lang,slug,title,description,cover_url,reading_min,published_at,keywords,news_key';
+
+// Articles of the series «Путь врача в США» (Asiia's own steps) are marked with news_key 'niw-diary-NN'
+export const isPathPost = (p: { news_key?: string | null }) => (p.news_key || '').startsWith('niw-diary');
 
 export async function getBlogPosts(lang: string, limit = 60): Promise<BlogPost[]> {
   const { data } = await panelDb().from('blog_posts').select(LIST)

@@ -27,12 +27,23 @@ export async function getSection(id: string): Promise<Section | null> {
   return (data as Section) || null;
 }
 
-export async function getTopics(lang: string, section?: string, limit = 50): Promise<Topic[]> {
+// News discussions are auto-created for every blog news article; they live in their own branch
+// so the main forum stays for people's questions and Asiia's own path.
+export const NEWS_SECTION = 'news';
+
+export async function getTopics(lang: string, section?: string, limit = 50, exclude?: string): Promise<Topic[]> {
   let q = db().from('forum_topics').select('id,section,lang,slug,title,body,author_name,author_kind,status,views,replies,pinned,created_at,last_at')
     .eq('lang', lang).eq('status', 'published');
   if (section) q = q.eq('section', section);
+  if (exclude) q = q.neq('section', exclude);
   const { data } = await q.order('pinned', { ascending: false }).order('last_at', { ascending: false }).limit(limit);
   return (data as Topic[]) || [];
+}
+
+export async function getPinnedDiary(lang: string): Promise<Topic | null> {
+  const { data } = await db().from('forum_topics').select('id,section,lang,slug,title,body,author_name,author_kind,status,views,replies,pinned,created_at,last_at')
+    .eq('lang', lang).eq('status', 'published').eq('author_kind', 'asya').eq('pinned', true).order('last_at', { ascending: false }).limit(1);
+  return ((data as Topic[]) || [])[0] || null;
 }
 
 export async function getTopic(lang: string, slug: string): Promise<Topic | null> {

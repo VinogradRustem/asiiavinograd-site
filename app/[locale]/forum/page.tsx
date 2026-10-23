@@ -4,7 +4,7 @@ import Footer from '@/components/Footer';
 import AskForm from '@/components/forum/AskForm';
 import SectionIcon from '@/components/forum/SectionIcon';
 import TopicList from '@/components/forum/TopicList';
-import { getSections, getTopics, sectionCounts } from '@/lib/forum';
+import { excerpt, fmtDate, getPinnedDiary, getSections, getTopics, NEWS_SECTION, sectionCounts } from '@/lib/forum';
 
 export const revalidate = 60;
 
@@ -24,9 +24,13 @@ export default async function ForumHome({ params }: { params: Promise<{ locale: 
   const { locale } = await params;
   const ru = locale === 'ru';
   const base = ru ? '/ru/forum' : '/forum';
-  const [sections, topics, counts] = await Promise.all([getSections(), getTopics(locale, undefined, 12), sectionCounts(locale)]);
+  const [allSections, topics, news, diary, counts] = await Promise.all([
+    getSections(), getTopics(locale, undefined, 12, NEWS_SECTION), getTopics(locale, NEWS_SECTION, 4), getPinnedDiary(locale), sectionCounts(locale),
+  ]);
+  const sections = allSections.filter(s => s.id !== NEWS_SECTION);
+  const newsSec = allSections.find(s => s.id === NEWS_SECTION);
   const nm = (s: { name_ru: string; name_en: string }) => (ru ? s.name_ru : s.name_en);
-  const names = Object.fromEntries(sections.map(s => [s.id, nm(s)]));
+  const names = Object.fromEntries(allSections.map(s => [s.id, nm(s)]));
   const total = Object.values(counts).reduce((a, b) => a + b, 0);
 
   return (
@@ -54,7 +58,7 @@ export default async function ForumHome({ params }: { params: Promise<{ locale: 
                 <div className="text-[13px] text-white/60">{ru ? 'На форуме' : 'On the forum'}</div>
                 <div className="mt-4 grid grid-cols-2 gap-3">
                   <div className="rounded-[20px] bg-white/10 p-4">
-                    <div className="text-[34px] font-medium leading-none">{sections.length}</div>
+                    <div className="text-[34px] font-medium leading-none">{allSections.length}</div>
                     <div className="mt-2 text-[13px] text-white/65">{ru ? 'разделов' : 'sections'}</div>
                   </div>
                   <div className="rounded-[20px] bg-white/10 p-4">
@@ -73,6 +77,26 @@ export default async function ForumHome({ params }: { params: Promise<{ locale: 
             </div>
           </div>
         </section>
+
+        {diary && (
+          <section className="px-3 pt-3 md:px-6">
+            <a href={`${base}/${diary.section}/${diary.slug}`} className="card-solid group mx-auto flex max-w-[1240px] flex-col gap-5 p-7 transition-shadow hover:shadow-lg md:flex-row md:items-center md:p-9">
+              <div className="min-w-0 flex-1">
+                <span className="rounded-full bg-slate px-3 py-1 text-[12px] font-medium text-white">{ru ? 'Закреплено · Путь в США' : 'Pinned · Path to the US'}</span>
+                <h2 className="mt-4 text-[24px] font-medium leading-tight tracking-[-0.02em] group-hover:text-slate md:text-[30px]">{diary.title}</h2>
+                <p className="mt-3 max-w-3xl text-[15px] leading-relaxed text-muted">{excerpt(diary.body, 220)}</p>
+                <div className="mt-3 text-[13px] text-muted/80">{diary.author_name} · {ru ? 'обновлено' : 'updated'} {fmtDate(diary.last_at, locale)}</div>
+              </div>
+              <div className="flex shrink-0 items-center gap-4">
+                <div className="rounded-2xl bg-mist px-4 py-3 text-center">
+                  <div className="text-[20px] font-medium leading-none text-slate">{diary.replies}</div>
+                  <div className="mt-1 text-[11px] text-muted">{ru ? 'ответов' : 'replies'}</div>
+                </div>
+                <span className="text-[15px] font-medium text-slate">{ru ? 'Читать дневник →' : 'Read the diary →'}</span>
+              </div>
+            </a>
+          </section>
+        )}
 
         <section className="px-3 py-10 md:px-6 md:py-14">
           <div className="mx-auto max-w-[1240px]">
@@ -96,14 +120,36 @@ export default async function ForumHome({ params }: { params: Promise<{ locale: 
 
         <section className="px-3 pb-14 md:px-6">
           <div className="mx-auto max-w-[1240px]">
-            <h2 className="text-[26px] font-medium tracking-[-0.02em] md:text-[32px]">{ru ? 'Свежие вопросы' : 'Latest questions'}</h2>
+            <h2 className="text-[26px] font-medium tracking-[-0.02em] md:text-[32px]">{ru ? 'Свежие обсуждения' : 'Latest discussions'}</h2>
             <div className="mt-6">
               {topics.length ? (
-                <TopicList topics={topics} base={base} lang={locale} names={names} />
+                <TopicList topics={topics.filter(t => t.id !== diary?.id)} base={base} lang={locale} names={names} />
               ) : (
                 <div className="card p-8 text-center text-[15px] text-muted">{ru ? 'Здесь появятся первые вопросы. Задайте свой!' : 'The first questions will appear here. Ask yours!'}</div>
               )}
             </div>
+            {newsSec && news.length ? (
+              <div className="mt-12">
+                <div className="flex flex-wrap items-end justify-between gap-3">
+                  <div>
+                    <h2 className="text-[22px] font-medium tracking-[-0.02em] md:text-[26px]">{nm(newsSec)}</h2>
+                    <p className="mt-1 text-[14px] text-muted">{ru ? 'Каждая новость из блога получает здесь свою ветку для вопросов и мнений.' : 'Every news article from the blog gets its own thread here.'}</p>
+                  </div>
+                  <a href={`${base}/${NEWS_SECTION}`} className="text-[14px] font-medium text-slate">{ru ? `Все новости · ${counts[NEWS_SECTION] || 0} →` : `All news · ${counts[NEWS_SECTION] || 0} →`}</a>
+                </div>
+                <div className="mt-4 grid gap-2.5 md:grid-cols-2">
+                  {news.map(t => (
+                    <a key={t.id} href={`${base}/${t.section}/${t.slug}`} className="card flex items-center justify-between gap-4 p-4 transition-colors hover:bg-white">
+                      <div className="min-w-0">
+                        <div className="line-clamp-2 text-[15px] font-medium leading-snug">{t.title}</div>
+                        <div className="mt-1 text-[12px] text-muted">{fmtDate(t.created_at, locale)}</div>
+                      </div>
+                      <span className="shrink-0 text-[13px] text-muted">{t.replies} {ru ? 'отв.' : 'repl.'}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ) : null}
             <p className="mt-8 text-[13px] leading-relaxed text-muted">
               {ru
                 ? 'Форум — бесплатный образовательный проект. Ответы участников не являются медицинской или юридической консультацией.'
