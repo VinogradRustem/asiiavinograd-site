@@ -12,7 +12,7 @@ import LECTURES from '../../../data/lectures.json';
 // a simple study plan to the exam date, subscription and club access, own consultations, community links.
 
 type Lecture = { yt: string; ru: string; en: string; sections: string[] };
-type Profile = { id: string; email: string; full_name: string | null; subscription: string | null; stage: string | null; exam_date: string | null; telegram: string | null; lang: string | null };
+type Profile = { id: string; email: string; full_name: string | null; subscription: string | null; stage: string | null; exam_date: string | null; telegram: string | null; lang: string | null; tg_id?: number | null; tg_username?: string | null; club_ru?: boolean; club_en?: boolean; club_checked_at?: string | null };
 type Booking = { id: string; starts_at: string; stage: string; questions: string };
 
 const TRIBUTE = 'https://t.me/tribute/app?startapp=s18Vt';
@@ -20,6 +20,7 @@ const PATREON = 'https://patreon.com/drasiiavinograd';
 const FREE_TG = 'https://t.me/usmle_img_community';
 const DISCORD = 'https://discord.gg/86urfUgPmF';
 const STAGES = ['start', 'step1', 'step2', 'match', 'other'];
+const BOT = 'asiia_content_ru_bot';
 
 export default function Dashboard() {
   const locale = useLocale();
@@ -37,6 +38,22 @@ export default function Dashboard() {
   const [form, setForm] = useState({ full_name: '', stage: 'step1', exam_date: '', telegram: '' });
   const [saving, setSaving] = useState(false);
   const [open, setOpen] = useState<string | null>(null);
+  const [linking, setLinking] = useState(false);
+
+  // «Connect Telegram»: the site gets a one-time link, the bot binds the account and checks the club group.
+  const connectTg = async () => {
+    setLinking(true);
+    const w = window.open('', '_blank');
+    const { data: { session } } = await supabase.auth.getSession();
+    const r = await fetch('/api/tg-link', { method: 'POST', headers: { Authorization: `Bearer ${session?.access_token || ''}` } });
+    const j = await r.json().catch(() => ({}));
+    setLinking(false);
+    if (j.url) { if (w) w.location.href = j.url; else window.location.href = j.url; } else w?.close();
+  };
+  const reload = async () => {
+    const { data: p } = await supabase.from('profiles').select('tg_id,tg_username,club_ru,club_en,club_checked_at,subscription').eq('id', profile!.id).maybeSingle();
+    if (p) setProfile({ ...profile!, ...(p as Partial<Profile>) });
+  };
 
   const sections = useMemo(() => {
     const items = t.raw('curriculum.items') as { title: string; slug: string }[];
@@ -53,7 +70,7 @@ export default function Dashboard() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { router.push(lp('/auth')); return; }
       const [{ data: p }, { data: v }, { data: b }] = await Promise.all([
-        supabase.from('profiles').select('id,email,full_name,subscription,stage,exam_date,telegram,lang').eq('id', user.id).maybeSingle(),
+        supabase.from('profiles').select('id,email,full_name,subscription,stage,exam_date,telegram,lang,tg_id,tg_username,club_ru,club_en,club_checked_at').eq('id', user.id).maybeSingle(),
         supabase.from('lecture_views').select('yt'),
         supabase.from('consult_bookings').select('id,starts_at,stage,questions').order('starts_at', { ascending: false }),
       ]);
@@ -94,7 +111,7 @@ export default function Dashboard() {
     <main className="page-bg flex min-h-screen items-center justify-center"><div className="text-muted">{L('Загрузка…', 'Loading…')}</div></main>
   );
 
-  const club = profile.subscription === 'club' || profile.subscription === 'mentoring';
+  const club = profile.subscription === 'club' || profile.subscription === 'mentoring' || !!profile.club_ru || !!profile.club_en;
   const done = watched.size;
   const pct = Math.round((done / Math.max(1, total)) * 100);
   const days = profile.exam_date ? Math.ceil((new Date(profile.exam_date).getTime() - Date.now()) / 86400000) : null;
@@ -128,6 +145,34 @@ export default function Dashboard() {
             <div className="flex flex-wrap gap-2">
               <button onClick={() => setEditing(!editing)} className="rounded-full border border-ink/15 px-5 py-2.5 text-sm text-ink hover:border-ink/40">{L('Мои данные', 'My details')}</button>
               <button onClick={signOut} className="rounded-full border border-ink/15 px-5 py-2.5 text-sm text-muted hover:text-ink">{L('Выйти', 'Sign out')}</button>
+            </div>
+          </div>
+
+          {/* Telegram link + club access */}
+          <div className="card mt-3 flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between md:px-8">
+            {profile.tg_id ? (
+              <div className="text-[15px] leading-relaxed">
+                <span className="font-medium">Telegram{profile.tg_username ? ` @${profile.tg_username}` : ''} {L('привязан', 'connected')}</span>
+                <span className="text-muted"> · {club ? L('доступ к USMLE Club открыт', 'USMLE Club access active') : L('в USMLE Club пока не найден', 'not in the USMLE Club yet')}</span>
+              </div>
+            ) : (
+              <div className="text-[15px] leading-relaxed">
+                <span className="font-medium">{L('Привяжите Telegram', 'Connect Telegram')}</span>
+                <span className="text-muted"> · {L('если вы в USMLE Club (оплата через Tribute), доступ к клубу откроется и здесь, в кабинете.', 'if you joined the USMLE Club via Telegram (Tribute), club access will unlock here too.')}</span>
+              </div>
+            )}
+            <div className="flex shrink-0 flex-wrap gap-2">
+              {profile.tg_id ? (
+                <>
+                  <a href={`https://t.me/${BOT}?start=check`} target="_blank" rel="noopener noreferrer" className="rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-white">{L('Проверить доступ', 'Check access')}</a>
+                  <button onClick={reload} className="rounded-full border border-ink/15 px-5 py-2.5 text-sm text-ink hover:border-ink/40">{L('Обновить', 'Refresh')}</button>
+                </>
+              ) : (
+                <>
+                  <button onClick={connectTg} disabled={linking} className="rounded-full px-5 py-2.5 text-sm font-medium text-white disabled:opacity-60" style={{ background: '#229ED9' }}>{linking ? L('Открываю…', 'Opening…') : L('Привязать Telegram', 'Connect Telegram')}</button>
+                  <button onClick={reload} className="rounded-full border border-ink/15 px-5 py-2.5 text-sm text-ink hover:border-ink/40">{L('Я привязал(а)', 'Done')}</button>
+                </>
+              )}
             </div>
           </div>
 
