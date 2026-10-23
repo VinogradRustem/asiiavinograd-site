@@ -13,6 +13,7 @@ import LECTURES from '../../../data/lectures.json';
 
 type Lecture = { yt: string; ru: string; en: string; sections: string[] };
 type Profile = { id: string; email: string; full_name: string | null; subscription: string | null; stage: string | null; exam_date: string | null; telegram: string | null; lang: string | null; tg_id?: number | null; tg_username?: string | null; club_ru?: boolean; club_en?: boolean; club_checked_at?: string | null };
+type Material = { id: number; access: string; lang: string; section_slug: string | null; section_name: string | null; title: string; description: string | null; thumb_url: string | null; yt_id: string | null; duration_sec: number | null; kind: string; created_at: string };
 type Booking = { id: string; starts_at: string; stage: string; questions: string };
 
 const TRIBUTE = 'https://t.me/tribute/app?startapp=s18Vt';
@@ -38,6 +39,9 @@ export default function Dashboard() {
   const [saving, setSaving] = useState(false);
   const [open, setOpen] = useState<string | null>(null);
   const [linking, setLinking] = useState(false);
+  const [mats, setMats] = useState<Material[]>([]);
+  const [media, setMedia] = useState<Record<number, { video_url: string | null; file_url: string | null }>>({});
+  const [player, setPlayer] = useState<{ title: string; video?: string | null; yt?: string | null } | null>(null);
   const [BOT, setBot] = useState('asiia_content_ru_bot');
   useEffect(() => { fetch('/api/tg-link').then((r) => r.json()).then((j) => j.bot && setBot(j.bot)).catch(() => {}); }, []);
 
@@ -81,6 +85,13 @@ export default function Dashboard() {
       setEditing(!prof.stage);
       setWatched(new Set((v || []).map((x: { yt: string }) => x.yt)));
       setBookings((b as Booking[]) || []);
+      // materials mirrored from Telegram/Discord: free for everyone, club only shows video to members (RLS on material_media)
+      const [{ data: m }, { data: md }] = await Promise.all([
+        supabase.from('materials').select('id,access,lang,section_slug,section_name,title,description,thumb_url,yt_id,duration_sec,kind,created_at').order('created_at', { ascending: false }).limit(500),
+        supabase.from('material_media').select('material_id,video_url,file_url').limit(1000),
+      ]);
+      setMats((m as Material[]) || []);
+      setMedia(Object.fromEntries(((md as { material_id: number; video_url: string | null; file_url: string | null }[]) || []).map((x) => [x.material_id, x])));
       setLoading(false);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -260,10 +271,12 @@ export default function Dashboard() {
                         const seen = watched.has(l.yt);
                         return (
                           <div key={l.yt} className={`flex flex-col overflow-hidden rounded-[20px] bg-white/70 ${seen ? 'opacity-70' : ''}`}>
-                            <a href={`https://www.youtube.com/watch?v=${l.yt}`} target="_blank" rel="noopener noreferrer" className="block aspect-video overflow-hidden bg-mist">
+                            <button onClick={() => { const fm = mats.find((x) => x.yt_id === l.yt); setPlayer({ title: ru ? l.ru : l.en, video: fm ? media[fm.id]?.video_url : null, yt: l.yt }); }}
+                              className="relative block aspect-video overflow-hidden bg-mist">
                               {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img src={`https://i.ytimg.com/vi/${l.yt}/mqdefault.jpg`} alt="" loading="lazy" className="h-full w-full object-cover" />
-                            </a>
+                              <img src={mats.find((x) => x.yt_id === l.yt)?.thumb_url || `https://i.ytimg.com/vi/${l.yt}/mqdefault.jpg`} alt="" loading="lazy" className="h-full w-full object-cover" />
+                              <span className="absolute inset-0 grid place-items-center"><span className="grid h-12 w-12 place-items-center rounded-full bg-white/90 text-ink shadow">▶</span></span>
+                            </button>
                             <div className="flex flex-1 flex-col p-4">
                               <div className="flex-1 text-[15px] font-medium leading-snug">{ru ? l.ru : l.en}</div>
                               <label className="mt-3 inline-flex cursor-pointer items-center gap-2 text-[14px] text-slate">
@@ -281,13 +294,86 @@ export default function Dashboard() {
             })}
           </div>
 
+          {/* USMLE Club materials, mirrored from the club topics in Telegram (RU) / Discord (EN) */}
+          {(() => {
+            const key = ru ? 'club_ru' : 'club_en';
+            const list = mats.filter((x) => x.access === key);
+            const groups = Array.from(new Set(list.map((x) => x.section_name || L('Разное', 'Other'))));
+            return (
+              <div className="mt-12">
+                <div className="flex flex-wrap items-end justify-between gap-3">
+                  <h2 className="text-[28px] font-medium tracking-[-0.02em] md:text-[34px]">{L('Материалы USMLE Club', 'USMLE Club materials')}</h2>
+                  {!club && <a href={ru ? TRIBUTE : PATREON} target="_blank" rel="noopener noreferrer" className="rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-white">{L('Вступить в клуб', 'Join the club')}</a>}
+                </div>
+                <p className="mt-1 text-[14px] text-muted">
+                  {club ? L('Всё, что Ася публикует в клубе, появляется здесь автоматически, по разделам. Можно смотреть здесь или в Telegram — как удобнее.', 'Everything posted in the club appears here automatically, by section.')
+                    : L('Лекции клуба по разделам Step 1. Откроются после вступления в клуб и привязки Telegram.', 'Club lessons by Step 1 section. Unlocked after joining the club.')}
+                </p>
+                {list.length === 0 ? (
+                  <div className="card mt-5 p-6 text-[15px] text-muted">{L('Первые лекции клуба появятся здесь сразу после публикации.', 'The first club lessons will appear here right after they are posted.')}</div>
+                ) : (
+                  <div className="mt-5 space-y-6">
+                    {groups.map((g) => (
+                      <div key={g}>
+                        <div className="text-[17px] font-medium">{g}</div>
+                        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                          {list.filter((x) => (x.section_name || L('Разное', 'Other')) === g).map((x) => {
+                            const v = media[x.id]?.video_url;
+                            const k = `m:${x.id}`;
+                            const seen = watched.has(k);
+                            return (
+                              <div key={x.id} className={`flex flex-col overflow-hidden rounded-[20px] bg-white/70 ${seen ? 'opacity-70' : ''}`}>
+                                <button disabled={!v} onClick={() => setPlayer({ title: x.title, video: v })} className="relative block aspect-video overflow-hidden bg-mist disabled:cursor-not-allowed">
+                                  {x.thumb_url ? (/* eslint-disable-next-line @next/next/no-img-element */ <img src={x.thumb_url} alt="" loading="lazy" className="h-full w-full object-cover" />) : null}
+                                  <span className="absolute inset-0 grid place-items-center"><span className="grid h-12 w-12 place-items-center rounded-full bg-white/90 text-ink shadow">{v ? '▶' : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></svg>}</span></span>
+                                </button>
+                                <div className="flex flex-1 flex-col p-4">
+                                  <div className="flex-1 text-[15px] font-medium leading-snug">{x.title}</div>
+                                  {x.duration_sec ? <div className="mt-1 text-[12.5px] text-muted">{Math.round(x.duration_sec / 60)} {L('мин', 'min')}</div> : null}
+                                  {v && (
+                                    <label className="mt-3 inline-flex cursor-pointer items-center gap-2 text-[14px] text-slate">
+                                      <input type="checkbox" checked={seen} onChange={() => toggle(k)} className="h-4 w-4 accent-[#3f6b78]" />
+                                      {L('Посмотрел(а)', 'Watched')}
+                                    </label>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+
+          {player && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/80 p-3" onClick={() => setPlayer(null)}>
+              <div className="w-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
+                <div className="mb-2 flex items-center justify-between gap-3 text-white">
+                  <div className="truncate text-[15px] font-medium">{player.title}</div>
+                  <button onClick={() => setPlayer(null)} className="rounded-full bg-white/15 px-4 py-1.5 text-sm">{L('Закрыть', 'Close')}</button>
+                </div>
+                <div className="aspect-video overflow-hidden rounded-2xl bg-black">
+                  {player.video ? (
+                    <video src={player.video} controls autoPlay playsInline className="h-full w-full" />
+                  ) : player.yt ? (
+                    <iframe src={`https://www.youtube-nocookie.com/embed/${player.yt}?autoplay=1`} allow="autoplay; encrypted-media; fullscreen" allowFullScreen className="h-full w-full" />
+                  ) : null}
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* club, consultations, community */}
           <div className="mt-12 grid gap-3 lg:grid-cols-3">
             <div className="flex flex-col rounded-[28px] bg-steel p-7 text-white md:p-9">
               <h3 className="text-[26px] font-medium leading-tight tracking-[-0.03em]">USMLE Club</h3>
               {club ? (
                 <>
-                  <p className="mt-3 flex-1 text-[15px] leading-relaxed text-white/75">{L('Вы в клубе. Занятия по разделам, разборы, PDF и Anki в закрытой группе.', 'You are in the club. Lessons, walkthroughs, PDFs and Anki are in the private community.')}</p>
+                  <p className="mt-3 flex-1 text-[15px] leading-relaxed text-white/75">{L('Вы в клубе. Лекции клуба — в разделе «Материалы USMLE Club» выше и в закрытой группе в Telegram.', 'You are in the club. Lessons, walkthroughs, PDFs and Anki are in the private community.')}</p>
                   <a href={ru ? TRIBUTE : DISCORD} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 font-medium">{L('Открыть клуб', 'Open the club')} <Arrow /></a>
                 </>
               ) : (
