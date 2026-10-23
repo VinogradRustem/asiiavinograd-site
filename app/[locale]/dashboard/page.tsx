@@ -225,7 +225,7 @@ export default function Dashboard() {
                       ? L(`Чтобы успеть к экзамену: примерно ${perWeek} лекц. в неделю, по разделам в этом порядке.`, `To be ready by the exam: about ${perWeek} lectures a week, sections in this order.`)
                       : L('Укажите дату экзамена в «Мои данные», и план разложится по неделям. Пока порядок разделов:', 'Add your exam date in “My details” to get a weekly plan. Section order for now:')}
                   </p>
-                  <ol className="mt-4 space-y-2">
+                  <ol className="mt-4 list-none space-y-2 pl-0">
                     {left.slice(0, 6).map((s, i) => (
                       <li key={s.slug} className="flex items-center justify-between gap-3 rounded-2xl bg-mist/60 px-4 py-3">
                         <span className="text-[15px]"><span className="text-steel">{i + 1}.</span> {s.title}</span>
