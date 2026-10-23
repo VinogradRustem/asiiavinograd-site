@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next'
 import { panelDb } from '@/lib/panel'
+import { allLectures, lectureSlug } from '@/lib/lectures'
 
 export const revalidate = 3600
 
@@ -24,6 +25,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
                    'gastroenterology', 'cases', 'labs', 'medical-english', 'anki']) {
     base.push({ url: `${B}/${s}`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 })
     base.push({ url: `${B}/ru/${s}`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 })
+  }
+  for (const l of allLectures()) {
+    base.push({ url: `${B}/ru/lectures/${lectureSlug(l)}`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 })
+    base.push({ url: `${B}/lectures/${lectureSlug(l)}`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 })
   }
   try {
     const db = panelDb()

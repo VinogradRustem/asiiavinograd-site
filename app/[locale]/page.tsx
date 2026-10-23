@@ -36,7 +36,7 @@ export default function Home() {
     pharmacology: 'Фармакология', labs: 'Анализы', pathology: 'Патология', cases: 'Разбор задач' };
   const lectureItems = ru
     ? (LECTURES as { yt: string; ru: string; en: string; sections: string[] }[]).slice(-6).reverse().map((l) => ({
-        tag: `${SEC_RU[l.sections[0]] || 'USMLE'} · Step 1`, title: l.ru, desc: '', url: `https://www.youtube.com/watch?v=${l.yt}`, soon: false }))
+        tag: `${SEC_RU[l.sections[0]] || 'USMLE'} · Step 1`, title: l.ru, desc: '', url: `/ru/lectures/${l.en.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 70)}`, soon: false }))
     : (t.raw('lectures.items') as { tag: string; title: string; desc: string; url: string; soon: boolean }[]);
   const trending = t.raw('trending.items') as { title: string; desc: string; tag: string }[];
   const basePlatforms = t.raw('connect.platforms') as { name: string; sub: string; url: string }[];

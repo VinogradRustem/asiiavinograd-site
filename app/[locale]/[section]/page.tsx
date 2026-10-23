@@ -4,6 +4,7 @@ import NavBar from '../../../components/NavBar';
 import Footer from '../../../components/Footer';
 import { Arrow, ArrowButton } from '../../../components/ui';
 import LECTURES from '../../../data/lectures.json';
+import { lectureSlug } from '@/lib/lectures';
 import en from '../../../messages/en.json';
 import ru from '../../../messages/ru.json';
 
@@ -93,7 +94,7 @@ export default async function SectionPage({ params }: { params: Promise<{ locale
           {lectures.length ? (
             <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {lectures.map((l) => (
-                <a key={l.yt} href={`https://www.youtube.com/watch?v=${l.yt}`} target="_blank" rel="noopener noreferrer"
+                <a key={l.yt} href={lp(`/lectures/${lectureSlug(l)}`)}
                   className="card group flex flex-col overflow-hidden transition-colors hover:bg-white">
                   <div className="relative aspect-video w-full overflow-hidden bg-mist">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -103,7 +104,7 @@ export default async function SectionPage({ params }: { params: Promise<{ locale
                   <div className="flex flex-1 flex-col p-5">
                     <h3 className="text-[18px] font-medium leading-snug text-ink">{isRu ? l.ru : l.en}</h3>
                     <span className="mt-4 inline-flex items-center gap-2 text-[14px] font-medium text-slate">
-                      {isRu ? 'Смотреть на YouTube' : 'Watch on YouTube'} <Arrow />
+                      {isRu ? 'Смотреть лекцию' : 'Watch the lecture'} <Arrow />
                     </span>
                   </div>
                 </a>
