@@ -12,7 +12,7 @@ import LECTURES from '../../../data/lectures.json';
 // a simple study plan to the exam date, subscription and club access, own consultations, community links.
 
 type Lecture = { yt: string; ru: string; en: string; sections: string[] };
-type Profile = { id: string; email: string; full_name: string | null; subscription: string | null; stage: string | null; exam_date: string | null; telegram: string | null; lang: string | null; tg_id?: number | null; tg_username?: string | null; club_ru?: boolean; club_en?: boolean; club_checked_at?: string | null };
+type Profile = { id: string; email: string; full_name: string | null; subscription: string | null; stage: string | null; exam_date: string | null; telegram: string | null; lang: string | null; tg_id?: number | null; tg_username?: string | null; discord_id?: string | null; discord_username?: string | null; club_ru?: boolean; club_en?: boolean; club_checked_at?: string | null };
 type Material = { id: number; access: string; lang: string; section_slug: string | null; section_name: string | null; title: string; description: string | null; thumb_url: string | null; yt_id: string | null; duration_sec: number | null; kind: string; created_at: string };
 type Booking = { id: string; starts_at: string; stage: string; questions: string };
 
@@ -55,8 +55,33 @@ export default function Dashboard() {
     setLinking(false);
     if (j.url) { if (w) w.location.href = j.url; else window.location.href = j.url; } else w?.close();
   };
+  // Discord (English club): username → the bot DMs a code → code typed here → role «USMLE Club Member» unlocks the club
+  const [dc, setDc] = useState({ name: '', code: '', status: '' });
+  const pollDc = async (until: string[]) => {
+    for (let i = 0; i < 20; i++) {
+      await new Promise((r) => setTimeout(r, 3000));
+      const { data } = await supabase.from('discord_links').select('status').eq('user_id', profile!.id).maybeSingle();
+      const st = (data as { status: string } | null)?.status || '';
+      if (until.includes(st)) { setDc((d) => ({ ...d, status: st })); return st; }
+    }
+    setDc((d) => ({ ...d, status: 'timeout' })); return 'timeout';
+  };
+  const dcSend = async () => {
+    if (!dc.name.trim()) return;
+    setDc((d) => ({ ...d, status: 'sending' }));
+    await supabase.from('discord_links').delete().eq('user_id', profile!.id);
+    await supabase.from('discord_links').insert({ user_id: profile!.id, username: dc.name.trim(), status: 'pending' });
+    await pollDc(['code_sent', 'not_found', 'dm_closed']);
+  };
+  const dcVerify = async () => {
+    setDc((d) => ({ ...d, status: 'checking' }));
+    await supabase.from('discord_links').update({ entered_code: dc.code.trim(), updated_at: new Date().toISOString() }).eq('user_id', profile!.id);
+    const st = await pollDc(['verified', 'failed', 'code_sent']);
+    if (st === 'verified') await reload();
+    else if (st === 'code_sent') setDc((d) => ({ ...d, status: 'wrong' }));
+  };
   const reload = async () => {
-    const { data: p } = await supabase.from('profiles').select('tg_id,tg_username,club_ru,club_en,club_checked_at,subscription').eq('id', profile!.id).maybeSingle();
+    const { data: p } = await supabase.from('profiles').select('tg_id,tg_username,club_ru,club_en,club_checked_at,subscription,discord_id,discord_username').eq('id', profile!.id).maybeSingle();
     if (p) setProfile({ ...profile!, ...(p as Partial<Profile>) });
   };
 
@@ -75,7 +100,7 @@ export default function Dashboard() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { router.push(lp('/auth')); return; }
       const [{ data: p }, { data: v }, { data: b }] = await Promise.all([
-        supabase.from('profiles').select('id,email,full_name,subscription,stage,exam_date,telegram,lang,tg_id,tg_username,club_ru,club_en,club_checked_at').eq('id', user.id).maybeSingle(),
+        supabase.from('profiles').select('id,email,full_name,subscription,stage,exam_date,telegram,lang,tg_id,tg_username,club_ru,club_en,club_checked_at,discord_id,discord_username').eq('id', user.id).maybeSingle(),
         supabase.from('lecture_views').select('yt'),
         supabase.from('consult_bookings').select('id,starts_at,stage,questions').order('starts_at', { ascending: false }),
       ]);
@@ -160,7 +185,42 @@ export default function Dashboard() {
             </div>
           </div>
 
+          {/* Discord link + English club access */}
+          {!ru && (
+            <div className="card mt-3 p-6 md:px-8">
+              {profile.discord_id ? (
+                <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                  <div className="text-[15px]"><span className="font-medium">Discord {profile.discord_username ? `@${profile.discord_username}` : ''} connected</span>
+                    <span className="text-muted"> · {profile.club_en ? 'USMLE Club access active' : 'no USMLE Club role yet (it is given by Patreon after you join)'}</span></div>
+                  <button onClick={reload} className="rounded-full border border-ink/15 px-5 py-2.5 text-sm text-ink hover:border-ink/40">Refresh</button>
+                </div>
+              ) : (
+                <div>
+                  <div className="text-[15px]"><span className="font-medium">Connect Discord</span><span className="text-muted"> · if you joined the USMLE Club on Patreon, club materials will unlock here too. Join our Discord server first.</span></div>
+                  {dc.status === 'code_sent' || dc.status === 'checking' || dc.status === 'wrong' ? (
+                    <div className="mt-3 flex flex-wrap items-center gap-2">
+                      <input value={dc.code} onChange={(e) => setDc({ ...dc, code: e.target.value })} placeholder="6-digit code from the Discord DM" className="w-64 rounded-full bg-mist/60 px-4 py-2.5 text-sm outline-none" />
+                      <button onClick={dcVerify} disabled={dc.status === 'checking'} className="rounded-full px-5 py-2.5 text-sm font-medium text-white disabled:opacity-60" style={{ background: '#5865F2' }}>{dc.status === 'checking' ? 'Checking…' : 'Confirm'}</button>
+                      {dc.status === 'wrong' && <span className="text-sm text-red-700">Wrong code, try again.</span>}
+                    </div>
+                  ) : (
+                    <div className="mt-3 flex flex-wrap items-center gap-2">
+                      <input value={dc.name} onChange={(e) => setDc({ ...dc, name: e.target.value })} placeholder="Your Discord username" className="w-64 rounded-full bg-mist/60 px-4 py-2.5 text-sm outline-none" />
+                      <button onClick={dcSend} disabled={dc.status === 'sending'} className="rounded-full px-5 py-2.5 text-sm font-medium text-white disabled:opacity-60" style={{ background: '#5865F2' }}>{dc.status === 'sending' ? 'Sending…' : 'Send me a code'}</button>
+                      <a href={DISCORD} target="_blank" rel="noopener noreferrer" className="text-sm text-slate">Join our Discord →</a>
+                    </div>
+                  )}
+                  {dc.status === 'not_found' && <p className="mt-2 text-sm text-red-700">We could not find this username on our Discord server. Join the server first, then try again.</p>}
+                  {dc.status === 'dm_closed' && <p className="mt-2 text-sm text-red-700">The bot could not DM you. In Discord: server menu → Privacy Settings → allow direct messages, then try again.</p>}
+                  {dc.status === 'timeout' && <p className="mt-2 text-sm text-muted">Taking longer than usual, try again in a minute.</p>}
+                  {dc.status === 'failed' && <p className="mt-2 text-sm text-red-700">Too many wrong codes. Request a new one.</p>}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Telegram link + club access */}
+          {ru && (
           <div className="card mt-3 flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between md:px-8">
             {profile.tg_id ? (
               <div className="text-[15px] leading-relaxed">
@@ -187,6 +247,8 @@ export default function Dashboard() {
               )}
             </div>
           </div>
+
+          )}
 
           {/* profile / onboarding */}
           {editing && (
