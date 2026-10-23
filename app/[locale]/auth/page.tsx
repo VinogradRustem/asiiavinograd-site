@@ -23,12 +23,18 @@ export default function AuthPage() {
     setSuccess('');
 
     if (mode === 'register') {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: { data: { full_name: name } }
       });
       if (error) setError(error.message);
+      else if (data.session) router.push(locale === 'ru' ? '/ru/dashboard' : '/dashboard');
+      else if (data.user && (data.user.identities || []).length === 0) {
+        // the email is already registered: Supabase does not say it directly
+        setMode('login');
+        setError(isRu ? 'Аккаунт с этим email уже есть. Войдите с паролем.' : 'This email is already registered. Please sign in.');
+      }
       else setSuccess(isRu ? 'Проверьте email для подтверждения!' : 'Check your email to confirm!');
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
