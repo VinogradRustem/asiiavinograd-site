@@ -40,7 +40,7 @@ export default function Dashboard() {
   const [open, setOpen] = useState<string | null>(null);
   const [linking, setLinking] = useState(false);
   const [mats, setMats] = useState<Material[]>([]);
-  const [media, setMedia] = useState<Record<number, { video_url: string | null; file_url: string | null }>>({});
+  const [media, setMedia] = useState<Record<number, { video_url: string | null; file_url: string | null; body?: string | null }>>({});
   const [player, setPlayer] = useState<{ title: string; video?: string | null; yt?: string | null } | null>(null);
   const [BOT, setBot] = useState('asiia_content_ru_bot');
   useEffect(() => { fetch('/api/tg-link').then((r) => r.json()).then((j) => j.bot && setBot(j.bot)).catch(() => {}); }, []);
@@ -113,10 +113,10 @@ export default function Dashboard() {
       // materials mirrored from Telegram/Discord: free for everyone, club only shows video to members (RLS on material_media)
       const [{ data: m }, { data: md }] = await Promise.all([
         supabase.from('materials').select('id,access,lang,section_slug,section_name,title,description,thumb_url,yt_id,duration_sec,kind,created_at').order('created_at', { ascending: false }).limit(500),
-        supabase.from('material_media').select('material_id,video_url,file_url').limit(1000),
+        supabase.from('material_media').select('material_id,video_url,file_url,body').limit(1000),
       ]);
       setMats((m as Material[]) || []);
-      setMedia(Object.fromEntries(((md as { material_id: number; video_url: string | null; file_url: string | null }[]) || []).map((x) => [x.material_id, x])));
+      setMedia(Object.fromEntries(((md as { material_id: number; video_url: string | null; file_url: string | null; body?: string | null }[]) || []).map((x) => [x.material_id, x])));
       setLoading(false);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -392,7 +392,7 @@ export default function Dashboard() {
                                   <div className="mt-1 text-[15px] font-medium leading-snug">{x.title}</div>
                                   {unlocked ? (
                                     <>
-                                      {x.kind === 'plan' && x.description ? <p className="mt-3 whitespace-pre-line text-[14px] leading-relaxed text-graphite/85">{x.description}</p> : null}
+                                      {x.kind === 'plan' && media[x.id]?.body ? <p className="mt-3 whitespace-pre-line text-[14px] leading-relaxed text-graphite/85">{media[x.id]?.body}</p> : null}
                                       {file ? <a href={file} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex w-fit rounded-full bg-ink px-4 py-2 text-[13px] font-medium text-white">{L('Скачать', 'Download')}</a> : null}
                                     </>
                                   ) : (
