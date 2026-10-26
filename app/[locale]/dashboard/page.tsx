@@ -379,8 +379,28 @@ export default function Dashboard() {
                       <div key={g}>
                         <div className="text-[17px] font-medium">{g}</div>
                         <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                          {list.filter((x) => (x.section_name || L('Разное', 'Other')) === g).map((x) => {
+                          {list.filter((x) => (x.section_name || L('Разное', 'Other')) === g)
+                            .sort((a, b) => (a.kind === 'plan' ? -1 : b.kind === 'plan' ? 1 : a.created_at.localeCompare(b.created_at))).map((x) => {
                             const v = media[x.id]?.video_url;
+                            const file = media[x.id]?.file_url;
+                            if (x.kind !== 'lecture') {
+                              const kindName: Record<string, string> = { plan: L('План раздела', 'Section plan'), pdf: L('PDF-выжимка', 'PDF summary'), anki: L('Колода Anki', 'Anki deck'), cases: L('Разбор задач', 'Case walkthrough'), other: L('Материал', 'Material') };
+                              const unlocked = club;
+                              return (
+                                <div key={x.id} className={`flex flex-col rounded-[20px] bg-white/70 p-5 ${x.kind === 'plan' ? 'sm:col-span-2 lg:col-span-3' : ''}`}>
+                                  <div className="text-[12px] font-medium uppercase tracking-wide text-steel">{kindName[x.kind] || kindName.other}</div>
+                                  <div className="mt-1 text-[15px] font-medium leading-snug">{x.title}</div>
+                                  {unlocked ? (
+                                    <>
+                                      {x.kind === 'plan' && x.description ? <p className="mt-3 whitespace-pre-line text-[14px] leading-relaxed text-graphite/85">{x.description}</p> : null}
+                                      {file ? <a href={file} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex w-fit rounded-full bg-ink px-4 py-2 text-[13px] font-medium text-white">{L('Скачать', 'Download')}</a> : null}
+                                    </>
+                                  ) : (
+                                    <p className="mt-2 text-[13px] text-muted">{L('Доступно участникам клуба', 'Available to club members')}</p>
+                                  )}
+                                </div>
+                              );
+                            }
                             const k = `m:${x.id}`;
                             const seen = watched.has(k);
                             return (
