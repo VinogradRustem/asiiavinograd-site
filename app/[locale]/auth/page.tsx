@@ -8,7 +8,7 @@ export default function AuthPage() {
   const locale = useLocale();
   const router = useRouter();
   const isRu = locale === 'ru';
-  const [mode, setMode] = useState<'login' | 'register'>('login');
+  const [mode, setMode] = useState<'login' | 'register' | 'forgot'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -22,6 +22,14 @@ export default function AuthPage() {
     setError('');
     setSuccess('');
 
+    if (mode === 'forgot') {
+      const redirectTo = `${window.location.origin}${isRu ? '/ru' : ''}/auth/reset`;
+      const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+      if (error) setError(isRu ? 'Не получилось отправить письмо. Попробуйте через минуту.' : 'Could not send the email. Please try again in a minute.');
+      else setSuccess(isRu ? 'Если такой аккаунт есть, мы отправили письмо со ссылкой для смены пароля. Проверьте также «Спам».' : 'If this account exists, we sent a link to reset your password. Check your spam folder too.');
+      setLoading(false);
+      return;
+    }
     if (mode === 'register') {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -54,7 +62,7 @@ export default function AuthPage() {
             ← {isRu ? 'На главную' : 'Back to home'}
           </a>
           <h1 className="text-3xl font-bold text-ink mt-4">
-            {mode === 'login' ? (isRu ? 'Войти' : 'Sign In') : (isRu ? 'Регистрация' : 'Sign Up')}
+            {mode === 'login' ? (isRu ? 'Войти' : 'Sign In') : mode === 'forgot' ? (isRu ? 'Восстановление пароля' : 'Reset password') : (isRu ? 'Регистрация' : 'Sign Up')}
           </h1>
           <p className="text-muted mt-2">Dr. Asiia Vinograd | USMLE</p>
         </div>
@@ -78,17 +86,34 @@ export default function AuthPage() {
             )}
             <input type="email" placeholder="Email"
               value={email} onChange={e => setEmail(e.target.value)} className={inp} required />
-            <input type="password" placeholder={isRu ? 'Пароль' : 'Password'}
-              value={password} onChange={e => setPassword(e.target.value)} className={inp} required />
+            {mode !== 'forgot' && (
+              <input type="password" placeholder={isRu ? 'Пароль' : 'Password'}
+                value={password} onChange={e => setPassword(e.target.value)} className={inp} required minLength={6} />
+            )}
+            {mode === 'login' && (
+              <button type="button" onClick={() => { setMode('forgot'); setError(''); setSuccess(''); }}
+                className="text-sm text-muted hover:text-ink transition-colors">
+                {isRu ? 'Забыли пароль?' : 'Forgot password?'}
+              </button>
+            )}
+            {mode === 'forgot' && (
+              <p className="text-sm text-muted">{isRu ? 'Укажите почту, на которую зарегистрирован кабинет. Пришлём ссылку для нового пароля.' : 'Enter your account email and we will send you a link to set a new password.'}</p>
+            )}
 
             {error && <p className="text-red-400 text-sm">{error}</p>}
             {success && <p className="text-green-400 text-sm">{success}</p>}
 
             <button type="submit" disabled={loading}
               className="w-full bg-slate hover:bg-ink text-white py-3 rounded-xl font-medium transition-all disabled:opacity-60">
-              {loading ? '...' : (mode === 'login' ? (isRu ? 'Войти' : 'Sign In') : (isRu ? 'Создать аккаунт' : 'Create Account'))}
+              {loading ? '...' : (mode === 'login' ? (isRu ? 'Войти' : 'Sign In') : mode === 'forgot' ? (isRu ? 'Отправить ссылку' : 'Send link') : (isRu ? 'Создать аккаунт' : 'Create Account'))}
             </button>
           </form>
+          {mode === 'forgot' && (
+            <button type="button" onClick={() => { setMode('login'); setError(''); setSuccess(''); }}
+              className="mt-4 text-sm text-muted hover:text-ink transition-colors">
+              ← {isRu ? 'Назад ко входу' : 'Back to sign in'}
+            </button>
+          )}
         </div>
       </div>
     </main>
