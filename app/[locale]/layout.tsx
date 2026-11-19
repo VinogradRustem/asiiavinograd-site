@@ -15,28 +15,32 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  icons: {
-    icon: '/favicon.svg',
-  },
-  title: "Dr. Asiia Vinograd | USMLE Educator for IMGs",
-  description: "Practicing cardiologist and USMLE educator helping international medical graduates achieve their dreams of practicing medicine in the United States.",
-  keywords: ["USMLE", "Step 1", "IMG", "international medical graduate", "cardiology", "USMLE educator"],
-  openGraph: {
-    title: "Dr. Asiia Vinograd | USMLE Educator",
-    description: "Practicing cardiologist and USMLE educator helping IMGs succeed in the US.",
-    url: "https://drasiiavinograd.com",
-    siteName: "Dr. Asiia Vinograd",
-    images: [{ url: "https://drasiiavinograd.com/asiia.jpg", width: 800, height: 800, alt: "Dr. Asiia Vinograd" }],
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Dr. Asiia Vinograd | USMLE Educator",
-    description: "Practicing cardiologist and USMLE educator helping IMGs succeed in the US.",
-    images: ["https://drasiiavinograd.com/asiia.jpg"],
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
+  const ru = locale === 'ru';
+  const title = ru ? 'Доктор Асия Виноград — подготовка к USMLE на русском' : 'Dr. Asiia Vinograd | USMLE Educator for IMGs';
+  const description = ru
+    ? 'Врач-кардиолог MD, PhD готовит русскоязычных врачей к USMLE Step 1: лекции, Anki-карточки, разборы задач и медицинский английский.'
+    : 'Practicing cardiologist and USMLE educator helping international medical graduates achieve their dreams of practicing medicine in the United States.';
+  const short = ru ? 'Подготовка к USMLE с доктором Асией Виноград' : 'Practicing cardiologist and USMLE educator helping IMGs succeed in the US.';
+  return {
+    metadataBase: new URL('https://www.drasiiavinograd.com'),
+    icons: { icon: '/favicon.svg' },
+    title,
+    description,
+    keywords: ru
+      ? ['USMLE', 'USMLE на русском', 'Step 1', 'подготовка к USMLE', 'врач в США', 'медицинский английский']
+      : ['USMLE', 'Step 1', 'IMG', 'international medical graduate', 'cardiology', 'USMLE educator'],
+    openGraph: {
+      title, description: short,
+      url: ru ? 'https://www.drasiiavinograd.com/ru' : 'https://www.drasiiavinograd.com',
+      siteName: ru ? 'Доктор Асия Виноград' : 'Dr. Asiia Vinograd',
+      images: [{ url: '/asiia.jpg', width: 800, height: 800, alt: ru ? 'Доктор Асия Виноград' : 'Dr. Asiia Vinograd' }],
+      type: 'website', locale: ru ? 'ru_RU' : 'en_US',
+    },
+    twitter: { card: 'summary_large_image', title, description: short, images: ['/asiia.jpg'] },
+  };
+}
 
 export default async function LocaleLayout({
   children,

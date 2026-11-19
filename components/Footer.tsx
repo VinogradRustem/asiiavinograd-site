@@ -56,8 +56,8 @@ export default function Footer() {
               {ru ? 'Доктор Асия Виноград' : 'Dr. Asiia Vinograd'}
             </div>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/55">{t('hero.slogan')}</p>
-            <a href="mailto:usmleforimgs.drvinograd@gmail.com" className="mt-6 inline-block text-sm text-white/80 underline decoration-white/30 underline-offset-4 hover:text-white">
-              usmleforimgs.drvinograd@gmail.com
+            <a href={`mailto:${ru ? 'asiia.vinograd.medicine@gmail.com' : 'usmleforimgs.drvinograd@gmail.com'}`} className="mt-6 inline-block text-sm text-white/80 underline decoration-white/30 underline-offset-4 hover:text-white">
+              {ru ? 'asiia.vinograd.medicine@gmail.com' : 'usmleforimgs.drvinograd@gmail.com'}
             </a>
           </div>
           {cols.map(c => (
