@@ -37,7 +37,7 @@ export default function AnkiPage() {
 
           {/* Header */}
           <p className="text-slate text-sm uppercase tracking-widest mb-3">Anki</p>
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold break-words hyphens-auto mb-6">
             {isRu ? 'Anki-карточки' : 'Anki Decks'}
           </h1>
           <p className="text-muted text-lg leading-relaxed mb-4">

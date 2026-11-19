@@ -25,7 +25,7 @@ export default async function ForumHome({ params }: { params: Promise<{ locale: 
   const ru = locale === 'ru';
   const base = ru ? '/ru/forum' : '/forum';
   const [allSections, topics, news, diary, counts] = await Promise.all([
-    getSections(), getTopics(locale, undefined, 12, NEWS_SECTION), getTopics(locale, NEWS_SECTION, 4), getPinnedDiary(locale), sectionCounts(locale),
+    getSections(), getTopics(locale, undefined, 12, NEWS_SECTION), getTopics(locale, NEWS_SECTION, 6), getPinnedDiary(locale), sectionCounts(locale),
   ]);
   const sections = allSections.filter(s => s.id !== NEWS_SECTION);
   const newsSec = allSections.find(s => s.id === NEWS_SECTION);
@@ -129,17 +129,20 @@ export default async function ForumHome({ params }: { params: Promise<{ locale: 
               )}
             </div>
             {newsSec && news.length ? (
-              <div className="mt-12">
-                <div className="flex flex-wrap items-end justify-between gap-3">
+              <details className="card group mt-12 p-5 md:p-6">
+                <summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-3 [&::-webkit-details-marker]:hidden">
                   <div>
-                    <h2 className="text-[22px] font-medium tracking-[-0.02em] md:text-[26px]">{nm(newsSec)}</h2>
-                    <p className="mt-1 text-[14px] text-muted">{ru ? 'Каждая новость из блога получает здесь свою ветку для вопросов и мнений.' : 'Every news article from the blog gets its own thread here.'}</p>
+                    <h2 className="text-[20px] font-medium tracking-[-0.02em] md:text-[22px]">{nm(newsSec)}</h2>
+                    <p className="mt-1 text-[13.5px] text-muted">{ru ? `${counts[NEWS_SECTION] || 0} веток по свежим медицинским новостям из блога` : `${counts[NEWS_SECTION] || 0} threads on recent medical news from the blog`}</p>
                   </div>
-                  <a href={`${base}/${NEWS_SECTION}`} className="text-[14px] font-medium text-slate">{ru ? `Все новости · ${counts[NEWS_SECTION] || 0} →` : `All news · ${counts[NEWS_SECTION] || 0} →`}</a>
-                </div>
-                <div className="mt-4 grid gap-2.5 md:grid-cols-2">
+                  <span className="text-[14px] font-medium text-slate">
+                    <span className="group-open:hidden">{ru ? 'Показать ↓' : 'Show ↓'}</span>
+                    <span className="hidden group-open:inline">{ru ? 'Скрыть ↑' : 'Hide ↑'}</span>
+                  </span>
+                </summary>
+                <div className="mt-5 grid gap-2.5 md:grid-cols-2">
                   {news.map(t => (
-                    <a key={t.id} href={`${base}/${t.section}/${t.slug}`} className="card flex items-center justify-between gap-4 p-4 transition-colors hover:bg-white">
+                    <a key={t.id} href={`${base}/${t.section}/${t.slug}`} className="flex items-center justify-between gap-4 rounded-2xl bg-mist/60 p-4 transition-colors hover:bg-white">
                       <div className="min-w-0">
                         <div className="line-clamp-2 text-[15px] font-medium leading-snug">{t.title}</div>
                         <div className="mt-1 text-[12px] text-muted">{fmtDate(t.created_at, locale)}</div>
@@ -148,7 +151,8 @@ export default async function ForumHome({ params }: { params: Promise<{ locale: 
                     </a>
                   ))}
                 </div>
-              </div>
+                <a href={`${base}/${NEWS_SECTION}`} className="mt-4 inline-block text-[14px] font-medium text-slate">{ru ? `Все новости · ${counts[NEWS_SECTION] || 0} →` : `All news · ${counts[NEWS_SECTION] || 0} →`}</a>
+              </details>
             ) : null}
             <p className="mt-8 text-[13px] leading-relaxed text-muted">
               {ru

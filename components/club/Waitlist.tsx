@@ -18,7 +18,10 @@ export default function Waitlist({ lang }: { lang: string }) {
     try {
       const r = await fetch('/api/club/waitlist', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...f, lang }) });
       const j = await r.json().catch(() => ({}));
-      if (r.ok) setDone(true);
+      if (r.ok) {
+        try { (window as unknown as { ym?: (...a: unknown[]) => void }).ym?.(114372096, 'reachGoal', 'club_waitlist'); } catch {}
+        setDone(true);
+      }
       else setErr(j.error || t('Не получилось отправить. Попробуйте ещё раз.', 'Could not send. Please try again.'));
     } catch {
       setErr(t('Не получилось отправить. Попробуйте ещё раз.', 'Could not send. Please try again.'));

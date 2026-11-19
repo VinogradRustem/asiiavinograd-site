@@ -51,7 +51,7 @@ export default function MicrobiologyPage() {
             </span>
             <p className="text-slate text-sm uppercase tracking-widest">Microbiology</p>
           </div>
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold break-words hyphens-auto mb-6">
             {isRu ? 'Микробиология' : 'Microbiology'}
           </h1>
           <p className="text-muted text-lg leading-relaxed mb-16 max-w-2xl">

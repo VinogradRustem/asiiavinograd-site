@@ -48,7 +48,10 @@ export default function Booking({ lang }: { lang: string }) {
     });
     const j = await r.json().catch(() => ({}));
     setBusy(false);
-    if (r.ok) setDone(j.starts_at || pick.starts_at);
+    if (r.ok) {
+      try { (window as unknown as { ym?: (...a: unknown[]) => void }).ym?.(114372096, 'reachGoal', 'consult_booking'); } catch {}
+      setDone(j.starts_at || pick.starts_at);
+    }
     else {
       setErr(j.error || t('Не получилось отправить.', 'Could not send.'));
       if (r.status === 409) { setPick(null); load(); }
