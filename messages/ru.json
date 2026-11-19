@@ -207,7 +207,7 @@
       {
         "name": "USMLE Club",
         "sub": "Закрытый клуб",
-        "url": "https://t.me/tribute/app?startapp=s18Vt"
+        "url": "/ru/club"
       },
       {
         "name": "Discord",
@@ -320,8 +320,8 @@
           "PDF-лекции и план подготовки",
           "Все материалы в личном кабинете"
         ],
-        "cta": "Вступить в USMLE Club",
-        "url": "https://t.me/tribute/app?startapp=s18Vt",
+        "cta": "Записаться по $35",
+        "url": "/ru/club",
         "highlight": true
       },
       {

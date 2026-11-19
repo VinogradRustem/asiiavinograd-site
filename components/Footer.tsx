@@ -12,7 +12,7 @@ const SOCIAL_EN = [
 const SOCIAL_RU = [
   { name: 'YouTube', url: 'https://youtube.com/@asiiavinogradusmle' },
   { name: 'Telegram', url: 'https://t.me/usmle_img_community' },
-  { name: 'USMLE Club', url: 'https://t.me/tribute/app?startapp=s18Vt' },
+  { name: 'USMLE Club', url: '/ru/club' },
   { name: 'Instagram', url: 'https://instagram.com/asia.vinograd' },
   { name: 'LinkedIn', url: 'https://linkedin.com/in/asiia-vinograd' },
 ];

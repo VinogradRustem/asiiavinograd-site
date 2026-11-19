@@ -365,7 +365,7 @@ export default function Dashboard() {
               <div className="mt-12">
                 <div className="flex flex-wrap items-end justify-between gap-3">
                   <h2 className="text-[28px] font-medium tracking-[-0.02em] md:text-[34px]">{L('Материалы USMLE Club', 'USMLE Club materials')}</h2>
-                  {!club && <a href={ru ? TRIBUTE : PATREON} target="_blank" rel="noopener noreferrer" className="rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-white">{L('Вступить в клуб', 'Join the club')}</a>}
+                  {!club && <a href={ru ? "/ru/club" : "/club"} className="rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-white">{L('Вступить в клуб', 'Join the club')}</a>}
                 </div>
                 <p className="mt-1 text-[14px] text-muted">
                   {club ? L('Всё, что Ася публикует в клубе, появляется здесь автоматически, по разделам. Можно смотреть здесь или в Telegram — как удобнее.', 'Everything posted in the club appears here automatically, by section.')
@@ -464,7 +464,7 @@ export default function Dashboard() {
                     {L('2 занятия в неделю по разделам Step 1, разборы задач, медицинский английский по воскресеньям, PDF и Anki, ответы Аси на ваши вопросы.',
                       '2 lessons a week by Step 1 section, question walkthroughs, Sunday medical English, PDFs and Anki, answers from Dr. Vinograd.')}
                   </p>
-                  <a href={ru ? TRIBUTE : PATREON} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 font-medium">{L('Вступить в клуб', 'Join the club')} <Arrow /></a>
+                  <a href={ru ? "/ru/club" : "/club"} className="mt-6 inline-flex items-center gap-2 font-medium">{L('Вступить в клуб', 'Join the club')} <Arrow /></a>
                 </>
               )}
             </div>
