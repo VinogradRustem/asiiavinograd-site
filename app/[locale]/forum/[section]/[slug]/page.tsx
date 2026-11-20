@@ -34,7 +34,7 @@ function linkify(text: string, guest: boolean) {
     if (!/^https?:\/\//.test(part)) return part;
     const url = part.replace(/[.,;:)]+$/, '');
     const tail = part.slice(url.length);
-    const own = url.startsWith('https://drasiiavinograd.com');
+    const own = /^https:\/\/(www\.)?drasiiavinograd\.com/.test(url);
     return (
       <span key={i}>
         <a href={url} className="underline underline-offset-4 hover:text-ink" target={own ? undefined : '_blank'}
@@ -52,7 +52,7 @@ export default async function TopicPage({ params }: P) {
   if (!t || !s || t.section !== s.id) notFound();
   const [posts, related] = await Promise.all([getPosts(t.id), getTopics(locale, s.id, 6)]);
   const name = (n: string, k: string) => (KIND_LABEL[k] ? KIND_LABEL[k][ru ? 0 : 1] : n);
-  const url = `https://drasiiavinograd.com${base}/${s.id}/${t.slug}`;
+  const url = `https://www.drasiiavinograd.com${base}/${s.id}/${t.slug}`;
   const ld = {
     '@context': 'https://schema.org',
     '@type': 'DiscussionForumPosting',

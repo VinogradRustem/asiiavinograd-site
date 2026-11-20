@@ -4,7 +4,7 @@ import { allLectures, lectureSlug } from '@/lib/lectures'
 
 export const revalidate = 3600
 
-const B = 'https://drasiiavinograd.com'
+const B = 'https://www.drasiiavinograd.com'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()

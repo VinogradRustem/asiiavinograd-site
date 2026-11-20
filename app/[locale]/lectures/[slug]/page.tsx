@@ -14,7 +14,7 @@ export function generateStaticParams() {
   return ['en', 'ru'].flatMap((locale) => allLectures().map((l) => ({ locale, slug: lectureSlug(l) })));
 }
 
-const B = 'https://drasiiavinograd.com';
+const B = 'https://www.drasiiavinograd.com';
 const SEC: Record<string, [string, string]> = { labs: ['Расшифровка анализов', 'Lab interpretation'], cases: ['Разборы задач', 'Question walkthroughs'] };
 function secName(slug: string, isRu: boolean) {
   if (SEC[slug]) return SEC[slug][isRu ? 0 : 1];

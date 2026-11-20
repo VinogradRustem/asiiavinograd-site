@@ -7,7 +7,7 @@ import { blogBase, fmtBlogDate, getBlogPost, getBlogPosts, renderMd } from '@/li
 export const revalidate = 300;
 
 type P = { params: Promise<{ locale: string; slug: string }> };
-const B = 'https://drasiiavinograd.com';
+const B = 'https://www.drasiiavinograd.com';
 
 export async function generateMetadata({ params }: P): Promise<Metadata> {
   const { locale, slug } = await params;
